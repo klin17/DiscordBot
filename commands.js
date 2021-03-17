@@ -12,16 +12,13 @@ const commands = {
         usage: "echo <argument>",
         description: "bot replies with <argument>",
         action: (msg, cmdArgs) => {
-            console.log("echo action called");
             let resp = cmdArgs.join(" ");
-            console.log(resp);
             msg.channel.send(resp);
         }
     }
 }
 
 exports.parseCommand = (msg) => {
-    console.log(msg.content);
     if(!msg.content) {
         return;
     }
@@ -35,6 +32,8 @@ exports.parseCommand = (msg) => {
         let cmdWord = firstWord.slice(1);
         let cmdObj = commands[cmdWord];
         if(cmdObj) {
+            console.log("calling " + cmdWord + " with args: ");
+            console.log(words)
             cmdObj.action(msg, words);
         } else {
             console.log("command: " + cmdWord + " was not found");
@@ -42,6 +41,3 @@ exports.parseCommand = (msg) => {
     }
 }
 
-exports.testFunc = () => {
-    console.log("testfunc was called");
-}
