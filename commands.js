@@ -28,7 +28,14 @@ const keywords = {
                 rest = rest.slice(2, rest.length);
             }
             if(rest.length > 0) {
-                msg.channel.send(rest);
+                if(!rest.includes("owa owa")) {
+                    msg.channel.send(rest);
+                } else {
+                    console.log("owa owa detected");
+                    msg.channel.send(rest, {files: 
+                        ["https://media1.popsugar-assets.com/files/thumbor/XgtQA5lYTsBMx43JloHC692RitY/fit-in/550x550/filters:format_auto-!!-:strip_icc-!!-/2021/01/12/236/n/1922243/03f082cb5ffe79b7318f16.42602943_/i/pudgywoke-tiktok-videos.jpg"]
+                    });
+                }
             }
         }
     }
