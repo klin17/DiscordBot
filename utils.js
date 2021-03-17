@@ -8,3 +8,11 @@ exports.strReplaceAll = (original, replacee, replacewith) => {
         return exports.strReplaceAll(replaced, replacee, replacewith);
     }
 }
+
+// returns the substring of the original string after the arg <substring>
+exports.strAfter = (original, substring, include=false) => {
+	if(include) {
+		return original.slice(original.indexOf(substring), original.length);
+	}
+	return original.slice(original.indexOf(substring) + substring.length, original.length);
+}

@@ -1,3 +1,5 @@
+const { strAfter } = require("./utils");
+
 const promptChar = "$";
 
 // command format:
@@ -14,6 +16,20 @@ const commands = {
         action: (msg, cmdArgs) => {
             let resp = cmdArgs.join(" ");
             msg.channel.send(resp);
+        }
+    }
+}
+
+const keywords = {
+    "can i get a": {
+        action: (msg) => {
+            let rest = strAfter(msg.content.toLowerCase(), "can i get a").trim();
+            if (rest.charAt(0) == 'n' && rest.charAt(1) == ' ') { // alias can i get an
+                rest = rest.slice(2, rest.length);
+            }
+            if(rest.length > 0) {
+                msg.channel.send(rest);
+            }
         }
     }
 }
@@ -41,3 +57,20 @@ exports.parseCommand = (msg) => {
     }
 }
 
+exports.parseKeyword = (msg) => {
+    if(!msg.content) {
+        return;
+    }
+    for(let keyphrase in keywords) {
+        if(msg.content.toLowerCase().includes(keyphrase)) {
+            console.log("found keyphrase " + keyphrase);
+            keywords[keyphrase].action(msg);
+        } else {
+            console.log(keyphrase + " was not found");
+            console.log(msg.content.toLowerCase());
+            console.log(msg.content.toLowerCase().includes(keyphrase));
+        }
+    }
+}
+
+exports.commands = commands;

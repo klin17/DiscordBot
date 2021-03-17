@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { testFunc, parseCommand } = require('./commands');
+const { testFunc, parseCommand, parseKeyword } = require('./commands');
 const { strReplaceAll } = require('./utils');
 // Create instance of discord client
 const client = new Discord.Client();
@@ -9,6 +9,7 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
+// Word/Phrase banning
 const bannedStrings = ["around the world"];
 
 function filterBannedStrings(msg) {
@@ -32,6 +33,7 @@ client.on('message', msg => {
         return;
     }
     parseCommand(msg);
+    parseKeyword(msg);
     if (msg.content === 'ping') {
         msg.reply('pong');
     }
