@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const { testFunc, parseCommand } = require('./commands');
 // Create instance of discord client
 const client = new Discord.Client();
 
@@ -9,8 +10,10 @@ client.on('ready', () => {
 
 // fires when any message is created
 client.on('message', msg => {
+    parseCommand(msg);
     if (msg.content === 'ping') {
         msg.reply('pong');
+        testFunc
     }
 });
 
