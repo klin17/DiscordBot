@@ -1,3 +1,4 @@
+//imports
 const Discord = require('discord.js');
 const { testFunc, parseCommand, parseKeyword } = require('./commands');
 const { strReplaceAll } = require('./utils');
@@ -34,6 +35,7 @@ client.on('message', msg => {
     }
     parseCommand(msg);
     parseKeyword(msg);
+    //ping pong test
     if (msg.content === 'ping') {
         msg.reply('pong');
     }

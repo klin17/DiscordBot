@@ -1,6 +1,6 @@
 const { strAfter, pickRandom } = require("./utils");
 
-const promptChar = "$";
+const PROMPTCHAR = "$";
 
 // command format:
 /*  commandWord: {
@@ -16,13 +16,50 @@ const commands = {
         action: (msg, cmdArgs) => {
             let resp = cmdArgs.join(" ");
             msg.channel.send(resp);
+        },
+    },
+
+    commands: {
+        usage: "commands",
+        description: "lists all commands currently available",
+        action: (msg, cmdArgs) => {
+            let commandsArray = [];
+            for(let c in commands) {
+                commandsArray.push(c);
+            }
+            msg.channel.send("Commands: \n" + commandsArray.join("\n"));
         }
+    },
+
+    help: {
+        usage: "help <optional cmd name>",
+        description: "prints the help message for a command, or lists commands",
+        action: (msg, cmdArgs) => {
+            if(cmdArgs.length > 0) {
+                let command = commands[cmdArgs[0]];
+                if(command) {
+                    let use = command["usage"];
+                    let desc = command["description"];
+                    msg.channel.send("Usage: " + PROMPTCHAR + use);
+                    msg.channel.send("\t" + desc);
+                } else {
+                    msg.channel.send("No match for command: " + command);
+                }
+            } else {
+                commands["commands"]["action"](msg, cmdArgs);
+            }
+        },
     }
 }
 
+
 const getPics = {
     "owa owa": [
-        "https://cdn.discordapp.com/attachments/821835099456405504/821873042032558110/pudgywoke-tiktok-videos.jpg"
+        "https://cdn.discordapp.com/attachments/821835099456405504/821873042032558110/pudgywoke-tiktok-videos.jpg",
+        "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/ed982d1fc0483573a78f34824cb6b3e8~c5_720x720.jpeg?x-expires=1616115600&x-signature=JBa3WwoMJNT%2F4q2S2W2dmtsLXIg%3D",
+        "https://pbs.twimg.com/profile_images/1337810830138744837/bxhDUW5-_400x400.jpg",
+        "https://hashtaghyena.com/wp-content/uploads/2021/01/IMG_4374.jpeg",
+        "https://media1.popsugar-assets.com/files/thumbor/lqNAj98ANxGQ7DycASpJsRkOQ00/fit-in/1024x1024/filters:format_auto-!!-:strip_icc-!!-/2021/01/12/187/n/1922243/addurlAw4hlQ/i/pudgywoke.jpg",
     ],
     "shaq": [
         "https://cdn.discordapp.com/attachments/821580269286457347/821884871512686602/https3A2F2Fblogs-images.png", 
@@ -66,7 +103,7 @@ exports.parseCommand = (msg) => {
     if(words.length <= 0) {
         return;
     }
-    if(words[0].length > 2 && words[0].charAt(0) == promptChar) {
+    if(words[0].length > 2 && words[0].charAt(0) == PROMPTCHAR) {
         // then see if a command exists that matches
         let firstWord = words.shift();
         let cmdWord = firstWord.slice(1);
