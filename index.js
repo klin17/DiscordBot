@@ -30,6 +30,9 @@ function filterBannedStrings(msg) {
 
 // fires when any message is created
 client.on('message', msg => {
+    if(msg.author.bot) { // do not respond to bots
+        return;
+    }
     //banned msgs are not further processed
     if(filterBannedStrings(msg)) {
         return;

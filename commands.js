@@ -67,6 +67,30 @@ const commands = {
             }
         },
     },
+
+    prune: {
+        usage: "prune <n>",
+        description: "deletes the last <n> messages. Capped at n = 100",
+        restricted: true,
+        action: async (msg, cmdArgs) => {
+            let num = parseInt(cmdArgs[0]);
+            if(!num || isNaN(num)) {
+                msg.channel.send("prune requires a number of messages to delete");
+            } else if (num > 100) {
+                msg.channel.send("Cannot prune more than 100 lines");
+            } else if (num >= 1) {
+                // delete num lines
+                console.log(typeof(num));
+                console.log("num is: ");
+                console.log(num);
+                await msg.channel.messages.fetch({limit: num}).then(messages => {
+                    msg.channel.bulkDelete(messages);
+                    msg.channel.send("Removed " + messages.size.toString() + " messages!");
+                })
+            }
+            //ignore if num < 1
+        }
+    },
 }
 
 
@@ -109,7 +133,12 @@ const keywords = {
                 msg.channel.send(rest, {files: fs});
             }
         }
-    }
+    },
+    "shia labeof": {
+        action: (msg) => {
+            msg.channel.send("JUST DO IT");
+        }
+    },
 }
 
 exports.parseCommand = (msg) => {
@@ -126,9 +155,16 @@ exports.parseCommand = (msg) => {
             if(cmdObj.restricted) {
                 //check if author is bot admin
                 if(!adminIDs.includes(msg.author.id)) {
-                    console.log("User " + msg.author.username + " cannot use command " + cmdWord);
-                    console.log(msg.author.id);
-                    return;
+                    let potentialPass = args[0];
+                    // check if user used the admin password
+                    if(potentialPass != private.adminPass) {
+                        console.log("User " + msg.author.username + " cannot use command " + cmdWord + " without password following");
+                        console.log(msg.author.id);
+                        return;
+                    } else {
+                        // remove message that has the password in it
+                        msg.delete();
+                    }
                 }
             }
             console.log("calling " + cmdWord + " with args: ");
