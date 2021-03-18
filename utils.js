@@ -16,3 +16,7 @@ exports.strAfter = (original, substring, include=false) => {
 	}
 	return original.slice(original.indexOf(substring) + substring.length, original.length);
 }
+
+exports.pickRandom = (arr) => {
+    return arr[Math.floor(Math.random() * arr.length)];
+}

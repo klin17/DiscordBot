@@ -1,4 +1,4 @@
-const { strAfter } = require("./utils");
+const { strAfter, pickRandom } = require("./utils");
 
 const promptChar = "$";
 
@@ -20,6 +20,23 @@ const commands = {
     }
 }
 
+const getPics = {
+    "owa owa": [
+        "https://cdn.discordapp.com/attachments/821835099456405504/821873042032558110/pudgywoke-tiktok-videos.jpg"
+    ],
+    "shaq": [
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884871512686602/https3A2F2Fblogs-images.png", 
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884893038247946/image.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884935769948160/shaq1.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884960151175189/images.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885282986229770/shaq-endorsements.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885526897328178/shaquille-oneal-apjpg-9375ed782cfd464d.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885546669408366/shaquille-oneal-music-videos.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885583546122240/images.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885653943189514/images.png",
+    ],
+}
+
 const keywords = {
     "can i get a": {
         action: (msg) => {
@@ -28,14 +45,14 @@ const keywords = {
                 rest = rest.slice(2, rest.length);
             }
             if(rest.length > 0) {
-                if(!rest.includes("owa owa")) {
-                    msg.channel.send(rest);
-                } else {
-                    console.log("owa owa detected");
-                    msg.channel.send(rest, {files: 
-                        ["https://media1.popsugar-assets.com/files/thumbor/XgtQA5lYTsBMx43JloHC692RitY/fit-in/550x550/filters:format_auto-!!-:strip_icc-!!-/2021/01/12/236/n/1922243/03f082cb5ffe79b7318f16.42602943_/i/pudgywoke-tiktok-videos.jpg"]
-                    });
+                let fs = [];
+                if(rest.includes("owa owa")) {
+                    fs.push(pickRandom(getPics["owa owa"]));
                 }
+                if(rest.includes("shaq")) {
+                    fs.push(pickRandom(getPics["shaq"]));
+                }
+                msg.channel.send(rest, {files: fs});
             }
         }
     }
