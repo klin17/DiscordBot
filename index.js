@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 const { parseCommand, parseKeyword } = require('./commands');
 const { strReplaceAll } = require('./utils');
-const private = require('./secure.json');
+const private = require('./private.json');
 // Create instance of discord client
 const client = new Discord.Client();
 

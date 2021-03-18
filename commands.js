@@ -1,5 +1,6 @@
 const { strAfter, pickRandom } = require("./utils");
-
+const private = require('./private.json');
+const adminIDs = private.admins;
 const PROMPTCHAR = "$";
 
 // command format:
@@ -56,9 +57,14 @@ const commands = {
 
     whoami: {
         usage: "whoami",
-        description: "test command to get user info",
+        description: "responds with username (or bot admin if applicable)",
+        restricted: true,
         action: (msg, cmdArgs) => {
-            console.log(msg.author);
+            if(adminIDs.includes(msg.author.id)) {
+                msg.channel.send("bot admin");
+            } else {
+                msg.channel.send("User: " + msg.author.username);
+            }
         },
     },
 }
@@ -117,6 +123,14 @@ exports.parseCommand = (msg) => {
         cmdWord = cmdWord.slice(PROMPTCHAR.length).toLowerCase(); //get rid of the initial prompt char
         let cmdObj = commands[cmdWord];
         if(cmdObj) {
+            if(cmdObj.restricted) {
+                //check if author is bot admin
+                if(!adminIDs.includes(msg.author.id)) {
+                    console.log("User " + msg.author.username + " cannot use command " + cmdWord);
+                    console.log(msg.author.id);
+                    return;
+                }
+            }
             console.log("calling " + cmdWord + " with args: ");
             console.log(args)
             cmdObj.action(msg, args);
