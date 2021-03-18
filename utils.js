@@ -17,6 +17,7 @@ exports.strAfter = (original, substring, include=false) => {
 	return original.slice(original.indexOf(substring) + substring.length, original.length);
 }
 
+// returns a random element of the array. Assumes arr.length > 0.
 exports.pickRandom = (arr) => {
     return arr[Math.floor(Math.random() * arr.length)];
 }

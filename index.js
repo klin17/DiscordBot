@@ -1,7 +1,8 @@
 //imports
 const Discord = require('discord.js');
-const { testFunc, parseCommand, parseKeyword } = require('./commands');
+const { parseCommand, parseKeyword } = require('./commands');
 const { strReplaceAll } = require('./utils');
+const private = require('./secure.json');
 // Create instance of discord client
 const client = new Discord.Client();
 
@@ -42,4 +43,4 @@ client.on('message', msg => {
 });
 
 // login to discord (should happen after setup of event handlers)
-client.login('ODIxODE2NTAzNzkxMTI0NTIz.YFJOQw.vsIcw0K-KAw-bsy3mEtpcs6DDFQ');
+client.login(private.botToken);

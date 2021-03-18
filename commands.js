@@ -15,7 +15,9 @@ const commands = {
         description: "bot replies with <argument>",
         action: (msg, cmdArgs) => {
             let resp = cmdArgs.join(" ");
-            msg.channel.send(resp);
+            if(resp) {
+                msg.channel.send(resp);
+            }
         },
     },
 
@@ -33,7 +35,7 @@ const commands = {
 
     help: {
         usage: "help <optional cmd name>",
-        description: "prints the help message for a command, or lists commands",
+        description: "sends the help message for a command, or lists commands",
         action: (msg, cmdArgs) => {
             if(cmdArgs.length > 0) {
                 let command = commands[cmdArgs[0]];
@@ -41,15 +43,24 @@ const commands = {
                     let use = command["usage"];
                     let desc = command["description"];
                     msg.channel.send("Usage: " + PROMPTCHAR + use);
-                    msg.channel.send("\t" + desc);
+                    msg.channel.send(desc);
                 } else {
-                    msg.channel.send("No match for command: " + command);
+                    msg.channel.send("No match for command: " + cmdArgs[0]);
                 }
             } else {
+                //call $commands
                 commands["commands"]["action"](msg, cmdArgs);
             }
         },
-    }
+    },
+
+    whoami: {
+        usage: "whoami",
+        description: "test command to get user info",
+        action: (msg, cmdArgs) => {
+            console.log(msg.author);
+        },
+    },
 }
 
 
@@ -99,19 +110,16 @@ exports.parseCommand = (msg) => {
     if(!msg.content) {
         return;
     }
-    let words = msg.content.split(" "); // split on spaces
-    if(words.length <= 0) {
-        return;
-    }
-    if(words[0].length > 2 && words[0].charAt(0) == PROMPTCHAR) {
-        // then see if a command exists that matches
-        let firstWord = words.shift();
-        let cmdWord = firstWord.slice(1);
+    if(msg.content.startsWith(PROMPTCHAR)){
+        //Then process the potential command
+
+        let [cmdWord, ...args] = msg.content.split(/ +/); // split on spaces (not all whitespace)
+        cmdWord = cmdWord.slice(PROMPTCHAR.length).toLowerCase(); //get rid of the initial prompt char
         let cmdObj = commands[cmdWord];
         if(cmdObj) {
             console.log("calling " + cmdWord + " with args: ");
-            console.log(words)
-            cmdObj.action(msg, words);
+            console.log(args)
+            cmdObj.action(msg, args);
         } else {
             console.log("command: " + cmdWord + " was not found");
         }
@@ -126,10 +134,6 @@ exports.parseKeyword = (msg) => {
         if(msg.content.toLowerCase().includes(keyphrase)) {
             console.log("found keyphrase " + keyphrase);
             keywords[keyphrase].action(msg);
-        } else {
-            console.log(keyphrase + " was not found");
-            console.log(msg.content.toLowerCase());
-            console.log(msg.content.toLowerCase().includes(keyphrase));
         }
     }
 }
