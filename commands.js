@@ -91,6 +91,28 @@ const commands = {
             //ignore if num < 1
         }
     },
+
+    atrandom: {
+        usage: "atRandom",
+        description: "@s someone random in the server",
+        restricted: true,
+        action: (msg, cmdArgs) => {
+            console.log("atrandom action called");
+            msg.guild.members.fetch({force: true}).then(members => {
+                console.log("fetch finished");
+                let humans = [];
+                members.forEach(m => {
+                    if(!m.user.bot) {
+                        humans.push(m.user);
+                    }
+                })
+                console.log("found members:");
+                console.log(humans);
+                let randID = pickRandom(humans).id;
+                msg.channel.send(`HI <@${randID}>`);
+            });
+        },
+    },
 }
 
 
@@ -134,7 +156,7 @@ const keywords = {
             }
         }
     },
-    "shia labeof": {
+    "shia labeouf": {
         action: (msg) => {
             msg.channel.send("JUST DO IT");
         }
@@ -158,8 +180,7 @@ exports.parseCommand = (msg) => {
                     let potentialPass = args[0];
                     // check if user used the admin password
                     if(potentialPass != private.adminPass) {
-                        console.log("User " + msg.author.username + " cannot use command " + cmdWord + " without password following");
-                        console.log(msg.author.id);
+                        msg.channel.send("Sorry, you can't use the " + cmdWord + " command");
                         return;
                     } else {
                         // remove message that has the password in it
