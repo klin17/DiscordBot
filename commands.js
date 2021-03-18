@@ -1,6 +1,6 @@
 const { strAfter, pickRandom } = require("./utils");
 const private = require('./private.json');
-const adminIDs = private.admins;
+const { isAdmin } = require("./botprivileges");
 const PROMPTCHAR = "$";
 
 // command format:
@@ -60,7 +60,7 @@ const commands = {
         description: "responds with username (or bot admin if applicable)",
         restricted: true,
         action: (msg, cmdArgs) => {
-            if(adminIDs.includes(msg.author.id)) {
+            if(isAdmin(msg.author.id, cmdArgs[0])) {
                 msg.channel.send("bot admin");
             } else {
                 msg.channel.send("User: " + msg.author.username);
@@ -97,22 +97,34 @@ const commands = {
         description: "@s someone random in the server",
         restricted: true,
         action: (msg, cmdArgs) => {
-            console.log("atrandom action called");
             msg.guild.members.fetch({force: true}).then(members => {
-                console.log("fetch finished");
                 let humans = [];
                 members.forEach(m => {
                     if(!m.user.bot) {
                         humans.push(m.user);
                     }
                 })
-                console.log("found members:");
-                console.log(humans);
                 let randID = pickRandom(humans).id;
                 msg.channel.send(`HI <@${randID}>`);
             });
         },
     },
+
+    login: {
+        usage: "login <password>",
+        description: "logs in as bot admin until midnight",
+        action: (msg, cmdArgs) => {
+            if(cmdArgs.length >= 1 && cmdArgs[0] == private.adminPass) {
+                // add user id to list of admins
+            }
+            // var name = 'fileName.json';
+            // var m = JSON.parse(fs.readFileSync(name).toString());
+            // m.forEach(function(p){
+            //     p.name= m.name;
+            // });
+            // fs.writeFileSync(name, JSON.stringify(m));
+        }
+    }
 }
 
 
@@ -176,16 +188,9 @@ exports.parseCommand = (msg) => {
         if(cmdObj) {
             if(cmdObj.restricted) {
                 //check if author is bot admin
-                if(!adminIDs.includes(msg.author.id)) {
-                    let potentialPass = args[0];
-                    // check if user used the admin password
-                    if(potentialPass != private.adminPass) {
-                        msg.channel.send("Sorry, you can't use the " + cmdWord + " command");
-                        return;
-                    } else {
-                        // remove message that has the password in it
-                        msg.delete();
-                    }
+                if(!isAdmin(msg.author.id)) {
+                    console.log("non admin attempt to run command: " + cmdWord);
+                    return;
                 }
             }
             console.log("calling " + cmdWord + " with args: ");
