@@ -1,5 +1,5 @@
 const { strAfter, pickRandom } = require("./utils");
-const { isAdmin, isPermAdmin } = require("./botprivileges");
+const { isAdmin, isPermAdmin, revokeAdmin } = require("./botprivileges");
 const PROMPTCHAR = "$";
 
 function defaultBadArgResponse(msg, commandName) {
@@ -117,11 +117,30 @@ const commands = {
                 msg.channel.send("User is already permanent admin");
             } else if(cmdArgs[0] && isAdmin(msg.author.id, cmdArgs[0])) {
                 msg.delete();
+                msg.channel.send(`User <@${mutee.id}> has bot admin privileges for 5 min`)
                 msg.channel.send("User has bot admin privileges for 5 min");
             } else {
                 msg.channel.send("Incorrect password");
             }
         },
+    },
+
+    revoke: {
+        usage: "revoke permanent? @<user>",
+        description: "revokes admin privileges from <user> if they are not perm admin",
+        restricted: true,
+        action: (msg, cmdArgs) => {
+            const user = msg.mentions.members.first();
+            if(!user) {
+                defaultBadArgResponse(msg, "revoke");
+            } else if(user.id == msg.author.id) {
+                msg.channel.send("Cannot revoke your own admin privileges");
+            } else if(isPermAdmin(user.id)) {
+                msg.channel.send("cannot revoke permanent admin privileges");
+            } else {
+                revokeAdmin(user.id);
+            }
+        }
     },
 
     poll: {

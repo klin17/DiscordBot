@@ -26,3 +26,14 @@ exports.isAdmin = (id, pw) => {
 exports.isPermAdmin = (id) => {
     return (admins[id] && admins[id] == -1);
 }
+
+// Removes timestamp
+exports.revokeAdmin = (id) => {
+    //only admins can revoke admin
+    if(exports.isAdmin(id)) {
+        admins[id] = undefined;
+        fs.writeFileSync('admins.json', JSON.stringify(admins, null, 4));
+        return true;
+    }
+    return false;
+}
