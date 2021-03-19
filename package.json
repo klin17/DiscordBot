@@ -12,5 +12,9 @@
   "dependencies": {
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url" : "https://github.com/klin17/DiscordBot/"
   }
 }
