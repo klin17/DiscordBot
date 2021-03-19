@@ -1,4 +1,5 @@
 //imports
+require('dotenv').config();
 const Discord = require('discord.js');
 const { parseCommand, parseKeyword } = require('./commands');
 const { strReplaceAll } = require('./utils');
@@ -42,4 +43,4 @@ client.on('message', msg => {
 });
 
 // login to discord (should happen after setup of event handlers)
-client.login(private.botToken);
+client.login(process.env.DISCORD_TOKEN);
