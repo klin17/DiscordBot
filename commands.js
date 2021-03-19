@@ -280,10 +280,10 @@ const keywords = {
             let rest = strAfterRegex(msg.content, keywords["can i get a"].regex).trim();
             if(rest.length > 0) {
                 let piclinks = [];
-                if(rest.includes("owa owa")) {
+                if(rest.match(/o+w+a+ o+w+a+/i)) {
                     piclinks.push(pickRandom(getPics["owa owa"]));
                 }
-                if(rest.includes("shaq")) {
+                if(rest.match(/shaq/i)) {
                     piclinks.push(pickRandom(getPics["shaq"]));
                 }
                 msg.channel.send(rest);
