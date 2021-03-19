@@ -1,4 +1,5 @@
-const private = require('./private.json');
+require('dotenv').config();
+const admins = require('./admins.json');
 const fs = require('fs');
 
 // returns if user with id <id> is an admin, with optional param pw
@@ -8,14 +9,14 @@ exports.isAdmin = (id, pw) => {
         return true;
     }
     // check if PW correct
-    if(pw && private.adminPass) {
+    if(pw && process.env.ADMIN_PASS) {
         // Update time stamp then return true
-        private.admins[id] = Date.now();
-        fs.writeFileSync('private.json', JSON.stringify(private, null, 4));
+        admins[id] = Date.now();
+        fs.writeFileSync('admins.json', JSON.stringify(admins, null, 4));
         return true;
     }
     // check if was within 5 min of login
-    if(private.admins[id] && Date.now() - private.admins[id] < 5*60*1000) {
+    if(admins[id] && Date.now() - admins[id] < 5*60*1000) {
         return true;
     }
     return false;
@@ -23,5 +24,5 @@ exports.isAdmin = (id, pw) => {
 
 // Checks if private.admins[id] exists and is -1
 exports.isPermAdmin = (id) => {
-    return (private.admins[id] && private.admins[id] == -1);
+    return (admins[id] && admins[id] == -1);
 }
