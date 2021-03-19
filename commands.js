@@ -1,8 +1,11 @@
 const { strAfter, pickRandom } = require("./utils");
-const private = require('./private.json');
 const { isAdmin, isPermAdmin } = require("./botprivileges");
 const PROMPTCHAR = "$";
-const numberEmoji = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
+
+function defaultBadArgResponse(msg, commandName) {
+    msg.channel.send("Use " + PROMPTCHAR + "help " + commandName + ", for more info");
+}
+
 // command format:
 /*  commandWord: {
         usage: String,
@@ -10,12 +13,12 @@ const numberEmoji = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6�
         action: (msg: Message, cmdArgs: [String]) => void
     } 
 */
-
 const commands = {
     echo: {
         usage: "echo <argument>",
         description: "bot replies with <argument>",
         action: (msg, cmdArgs) => {
+            // send the cmdArgs joined back as one string
             let resp = cmdArgs.join(" ");
             if(resp) {
                 msg.channel.send(resp);
@@ -40,17 +43,17 @@ const commands = {
         description: "sends the help message for a command, or lists commands",
         action: (msg, cmdArgs) => {
             if(cmdArgs.length > 0) {
+                // check if first arg is a command
                 let command = commands[cmdArgs[0]];
                 if(command) {
-                    let use = command["usage"];
-                    let desc = command["description"];
-                    msg.channel.send("Usage: " + PROMPTCHAR + use);
-                    msg.channel.send(desc);
+                    // Send the usage and description for the found command
+                    msg.channel.send("Usage: " + PROMPTCHAR + command["usage"]);
+                    msg.channel.send(command["description"]);
                 } else {
                     msg.channel.send("No match for command: " + cmdArgs[0]);
                 }
             } else {
-                //call $commands
+                //call $commands to list out all commands
                 commands["commands"]["action"](msg, cmdArgs);
             }
         },
@@ -75,21 +78,15 @@ const commands = {
         restricted: true,
         action: async (msg, cmdArgs) => {
             let num = parseInt(cmdArgs[0]);
-            if(!num || isNaN(num)) {
-                msg.channel.send("prune requires a number of messages to delete");
-            } else if (num > 100) {
-                msg.channel.send("Cannot prune more than 100 lines");
-            } else if (num >= 1) {
+            if(!num || isNaN(num) || num > 100 || num < 1) {
+                defaultBadArgResponse(msg, "prune");
+            } else {
                 // delete num lines
-                console.log(typeof(num));
-                console.log("num is: ");
-                console.log(num);
                 await msg.channel.messages.fetch({limit: num}).then(messages => {
                     msg.channel.bulkDelete(messages);
                     msg.channel.send("Removed " + messages.size.toString() + " messages!");
                 })
             }
-            //ignore if num < 1
         }
     },
 
@@ -98,7 +95,7 @@ const commands = {
         description: "@s someone random in the server",
         restricted: true,
         action: (msg, cmdArgs) => {
-            msg.guild.members.fetch({force: true}).then(members => {
+            msg.guild.members.fetch().then(members => {
                 let humans = [];
                 members.forEach(m => {
                     if(!m.user.bot) {
@@ -151,7 +148,7 @@ const commands = {
                     msg.delete({ timeout: 1500 }).catch(console.error);
                 });
             } else {
-                msg.channel.send("Use " + PROMPTCHAR + "help poll, for more info");
+                defaultBadArgResponse(msg, "poll");
             }
         }
     }

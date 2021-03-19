@@ -22,7 +22,7 @@ function filterBannedStrings(msg) {
     if(cleanedContent !== msg.content.toLowerCase()) {
         // could send the cleaned content to msg.channel
         msg.channel.send("A message was deleted because it contained a banned phrase");
-        msg.delete();
+        msg.delete().catch(console.error);;
         return true;
     }
     return false;
@@ -39,10 +39,6 @@ client.on('message', msg => {
     }
     parseCommand(msg);
     parseKeyword(msg);
-    //ping pong test
-    if (msg.content === 'ping') {
-        msg.reply('pong');
-    }
 });
 
 // login to discord (should happen after setup of event handlers)
