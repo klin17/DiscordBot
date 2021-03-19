@@ -151,7 +151,40 @@ const commands = {
                 defaultBadArgResponse(msg, "poll");
             }
         }
-    }
+    },
+
+    mute: {
+        usage: "mute @<person>",
+        description: "gives <person> the Muted roll",
+        action: (msg, cmd) => {
+            const mutee = msg.mentions.members.first();
+            if(!mutee) {
+                msg.channel.send("Don't forget to mention the person you want to mute");
+            } else if (mutee.id == msg.author.id) {
+                msg.channel.send("You cannot mute yourself");
+            } else {
+                const muterole = message.guild.roles.cache.find(x => x.name === "Muted");
+                if(!muterole) {
+                    message.channel.send("This server do not have role with name `Muted`");
+                } else if(mutee.roles.cache.has(muterole)) {
+                    message.channel.send("Given User is already muted")
+                } else {
+                    mutee.roles.add(muterole)
+                    message.channel.send(`Muted <@${mutee.id}>`)
+                }
+            }
+        },
+    },
+
+    unmute: {
+        usage: "unmute @<person>",
+        description: "removes the Muted role from <person>",
+        action: (msg, cmd) => {
+            const user = message.mentions.members.first();
+            let muterole = message.guild.roles.cache.find(x => x.name === "Muted")
+            user.roles.remove(muterole)
+        },
+    },
 }
 
 
