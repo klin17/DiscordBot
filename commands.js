@@ -1,5 +1,9 @@
-const { strAfter, pickRandom } = require("./utils");
+// imports
+const { pickRandom, strAfterRegex } = require("./utils");
 const { isAdmin, isPermAdmin, revokeAdmin } = require("./botprivileges");
+
+// COMMANDS: --------------
+
 const PROMPTCHAR = "$";
 
 function defaultBadArgResponse(msg, commandName) {
@@ -218,58 +222,6 @@ const commands = {
     },
 }
 
-
-const getPics = {
-    "owa owa": [
-        "https://cdn.discordapp.com/attachments/821835099456405504/821873042032558110/pudgywoke-tiktok-videos.jpg",
-        "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/ed982d1fc0483573a78f34824cb6b3e8~c5_720x720.jpeg?x-expires=1616115600&x-signature=JBa3WwoMJNT%2F4q2S2W2dmtsLXIg%3D",
-        "https://pbs.twimg.com/profile_images/1337810830138744837/bxhDUW5-_400x400.jpg",
-        "https://hashtaghyena.com/wp-content/uploads/2021/01/IMG_4374.jpeg",
-        "https://media1.popsugar-assets.com/files/thumbor/lqNAj98ANxGQ7DycASpJsRkOQ00/fit-in/1024x1024/filters:format_auto-!!-:strip_icc-!!-/2021/01/12/187/n/1922243/addurlAw4hlQ/i/pudgywoke.jpg",
-    ],
-    "shaq": [
-        "https://cdn.discordapp.com/attachments/821580269286457347/821884871512686602/https3A2F2Fblogs-images.png", 
-        "https://cdn.discordapp.com/attachments/821580269286457347/821884893038247946/image.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821884935769948160/shaq1.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821884960151175189/images.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821885282986229770/shaq-endorsements.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821885526897328178/shaquille-oneal-apjpg-9375ed782cfd464d.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821885546669408366/shaquille-oneal-music-videos.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821885583546122240/images.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821885653943189514/images.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/822255455035850762/unknown.png",
-    ],
-}
-
-const keywords = {
-    "can i get a": {
-        action: (msg) => {
-            let rest = strAfter(msg.content.toLowerCase(), "can i get a").trim();
-            if (rest.charAt(0) == 'n' && rest.charAt(1) == ' ') { // alias can i get an
-                rest = rest.slice(2, rest.length);
-            }
-            if(rest.length > 0) {
-                let piclinks = [];
-                if(rest.includes("owa owa")) {
-                    piclinks.push(pickRandom(getPics["owa owa"]));
-                }
-                if(rest.includes("shaq")) {
-                    piclinks.push(pickRandom(getPics["shaq"]));
-                }
-                msg.channel.send(rest);
-                if(piclinks.length > 0) {
-                    msg.channel.send(piclinks);
-                }
-            }
-        }
-    },
-    "shia labeouf": {
-        action: (msg) => {
-            msg.channel.send("JUST DO IT");
-        }
-    },
-}
-
 exports.parseCommand = (msg) => {
     if(!msg.content) {
         return;
@@ -296,14 +248,67 @@ exports.parseCommand = (msg) => {
     }
 }
 
+
+// Keywords: ----------------
+
+const getPics = {
+    "owa owa": [
+        "https://cdn.discordapp.com/attachments/821835099456405504/821873042032558110/pudgywoke-tiktok-videos.jpg",
+        "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/ed982d1fc0483573a78f34824cb6b3e8~c5_720x720.jpeg?x-expires=1616115600&x-signature=JBa3WwoMJNT%2F4q2S2W2dmtsLXIg%3D",
+        "https://pbs.twimg.com/profile_images/1337810830138744837/bxhDUW5-_400x400.jpg",
+        "https://hashtaghyena.com/wp-content/uploads/2021/01/IMG_4374.jpeg",
+        "https://media1.popsugar-assets.com/files/thumbor/lqNAj98ANxGQ7DycASpJsRkOQ00/fit-in/1024x1024/filters:format_auto-!!-:strip_icc-!!-/2021/01/12/187/n/1922243/addurlAw4hlQ/i/pudgywoke.jpg",
+    ],
+    "shaq": [
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884871512686602/https3A2F2Fblogs-images.png", 
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884893038247946/image.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884935769948160/shaq1.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821884960151175189/images.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885282986229770/shaq-endorsements.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885526897328178/shaquille-oneal-apjpg-9375ed782cfd464d.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885546669408366/shaquille-oneal-music-videos.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885583546122240/images.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/821885653943189514/images.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/822255455035850762/unknown.png",
+    ],
+}
+
+const keywords = {
+    "can i get a": {
+        regex: RegExp(/(c+|C+)(a+|A+)(n+|N+) *(i+|I+) *(g+|G+)(e+|E+)(t+|T+) *(a+(n+|N+)*|A+(n+|N+)*)/g),
+        action: (msg) => {
+            let rest = strAfterRegex(msg.content, keywords["can i get a"].regex).trim();
+            if(rest.length > 0) {
+                let piclinks = [];
+                if(rest.includes("owa owa")) {
+                    piclinks.push(pickRandom(getPics["owa owa"]));
+                }
+                if(rest.includes("shaq")) {
+                    piclinks.push(pickRandom(getPics["shaq"]));
+                }
+                msg.channel.send(rest);
+                if(piclinks.length > 0) {
+                    msg.channel.send(piclinks);
+                }
+            }
+        }
+    },
+    "shia labeouf": {
+        regex: RegExp(/(s+|S+)(h+|H+)(i+|I+)(a+|A+) *(l+|L+)(a+|A+)(b+|B+)(e+|E+)(o+|O+)(u+|U+)(f+|F+)/g),
+        action: (msg) => {
+            msg.channel.send("JUST DO IT");
+        }
+    },
+}
+
 exports.parseKeyword = (msg) => {
     if(!msg.content) {
         return;
     }
-    for(let keyphrase in keywords) {
-        if(msg.content.toLowerCase().includes(keyphrase)) {
-            console.log("found keyphrase " + keyphrase);
-            keywords[keyphrase].action(msg);
+    for(let key in keywords) {
+        if(keywords[key].regex.test(msg.content)) {
+            console.log("found keyphrase " + key);
+            keywords[key].action(msg);
         }
     }
 }

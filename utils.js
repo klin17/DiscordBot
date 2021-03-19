@@ -17,6 +17,18 @@ exports.strAfter = (original, substring, include=false) => {
 	return original.slice(original.indexOf(substring) + substring.length, original.length);
 }
 
+// returns the substring following the last match for regex
+exports.strAfterRegex = (original, regex) => {
+	regex.test(original);
+	return original.slice(regex.lastIndex, original.length);
+}
+
+// returns the index of the first char that matches regex
+exports.regexIndexOf = (string, regex, startpos) => {
+    var indexOf = string.substring(startpos || 0).search(regex);
+    return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+}
+
 // returns a random element of the array. Assumes arr.length > 0.
 exports.pickRandom = (arr) => {
     return arr[Math.floor(Math.random() * arr.length)];
