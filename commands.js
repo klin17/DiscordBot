@@ -275,9 +275,12 @@ const getPics = {
 
 const keywords = {
     "can i get a": {
-        regex: RegExp(/(c+|C+)(a+|A+)(n+|N+) *(i+|I+) *(g+|G+)(e+|E+)(t+|T+) *(a+(n+|N+)*|A+(n+|N+)*)/g),
+        regexStrings: ["c+a+n+ +i+ +g+e+t+ +a+n*", "gi"],
         action: (msg) => {
-            let rest = strAfterRegex(msg.content, keywords["can i get a"].regex).trim();
+            let regex = makeRegex(keywords["can i get a"].regexStrings);
+            regex.test(msg.content);
+	        let rest = msg.content.slice(regex.lastIndex, msg.content.length);
+
             if(rest.length > 0) {
                 let piclinks = [];
                 if(rest.match(/o+w+a+ o+w+a+/i)) {
@@ -294,11 +297,15 @@ const keywords = {
         }
     },
     "shia labeouf": {
-        regex: RegExp(/(s+|S+)(h+|H+)(i+|I+)(a+|A+) *(l+|L+)(a+|A+)(b+|B+)(e+|E+)(o+|O+)(u+|U+)(f+|F+)/g),
+        regexStrings: ["s+h+i+a+ +l+a+b+e+o+u+f+", "gi"],
         action: (msg) => {
             msg.channel.send("JUST DO IT");
         }
     },
+}
+
+function makeRegex([s, flags]) {
+    return new RegExp(s, flags);
 }
 
 exports.parseKeyword = (msg) => {
@@ -306,7 +313,7 @@ exports.parseKeyword = (msg) => {
         return;
     }
     for(let key in keywords) {
-        if(keywords[key].regex.test(msg.content)) {
+        if(makeRegex(keywords[key].regexStrings).test(msg.content)) {
             console.log("found keyphrase " + key);
             keywords[key].action(msg);
         }
