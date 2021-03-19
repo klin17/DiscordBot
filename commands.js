@@ -156,6 +156,7 @@ const commands = {
     mute: {
         usage: "mute @<person>",
         description: "gives <person> the Muted roll",
+        restricted: true,
         action: (msg, cmd) => {
             const mutee = msg.mentions.members.first();
             if(!mutee) {
@@ -226,7 +227,9 @@ const keywords = {
                     piclinks.push(pickRandom(getPics["shaq"]));
                 }
                 msg.channel.send(rest);
-                msg.channel.send(piclinks);
+                if(piclinks.length > 0) {
+                    msg.channel.send(piclinks);
+                }
             }
         }
     },
