@@ -28,3 +28,7 @@ exports.isAdmin = (id, pw) => {
     }
     return false;
 }
+
+exports.isPermAdmin = (id) => {
+    return private.admins[id] == -1;
+}

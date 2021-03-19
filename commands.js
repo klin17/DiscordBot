@@ -1,8 +1,8 @@
 const { strAfter, pickRandom } = require("./utils");
 const private = require('./private.json');
-const { isAdmin } = require("./botprivileges");
+const { isAdmin, isPermAdmin } = require("./botprivileges");
 const PROMPTCHAR = "$";
-
+const numberEmoji = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
 // command format:
 /*  commandWord: {
         usage: String,
@@ -10,6 +10,7 @@ const PROMPTCHAR = "$";
         action: (msg: Message, cmdArgs: [String]) => void
     } 
 */
+
 const commands = {
     echo: {
         usage: "echo <argument>",
@@ -114,15 +115,44 @@ const commands = {
         usage: "login <password>",
         description: "logs in as bot admin until midnight",
         action: (msg, cmdArgs) => {
-            if(cmdArgs.length >= 1 && cmdArgs[0] == private.adminPass) {
-                // add user id to list of admins
+            if(isPermAdmin(msg.author.id)) {
+                msg.channel.send("User is already permanent admin");
+            } else if(cmdArgs[0] && isAdmin(msg.author.id, cmdArgs[0])) {
+                msg.delete();
+                msg.channel.send("User has bot admin privileges for 5 min");
+            } else {
+                msg.channel.send("Incorrect password");
             }
-            // var name = 'fileName.json';
-            // var m = JSON.parse(fs.readFileSync(name).toString());
-            // m.forEach(function(p){
-            //     p.name= m.name;
-            // });
-            // fs.writeFileSync(name, JSON.stringify(m));
+        },
+    },
+
+    poll: {
+        usage: 'poll "question to ask" "item1" "item2"...',
+        description: "creates reaction poll using parameters, up to 10 items",
+        action: async (msg, cmdArgs) => {
+            // poll needs different splitting, convert to expected
+            cmdArgs = [" "].concat(cmdArgs).join(" ").split(/\s+"/);
+            cmdArgs.shift();
+
+            if(cmdArgs.length > 2 && cmdArgs.length <= 11) {
+                // function for removing ending quotation mark
+                const withoutLast = (s) => s.substring(0, s.length - 1);
+                // function for getting boxed number emojis (1) => 2
+                const getNumEmoji = (i) => String.fromCharCode(49+i, 0xFE0F, 0x20E3)
+                // Generate poll as a string
+                const question = withoutLast(cmdArgs.shift());
+                let pollString = cmdArgs.reduce(
+                    (acc, e, i) => acc + '\n-' + getNumEmoji(i) + ' ' + withoutLast(e), 
+                    question
+                );
+                // Send the pollstring and add reactions
+                await msg.channel.send(pollString).then(sentMessage => {
+                    cmdArgs.forEach((val, i) => sentMessage.react(getNumEmoji(i)));
+                    msg.delete({ timeout: 1500 }).catch(console.error);
+                });
+            } else {
+                msg.channel.send("Use " + PROMPTCHAR + "help poll, for more info");
+            }
         }
     }
 }
@@ -146,6 +176,7 @@ const getPics = {
         "https://cdn.discordapp.com/attachments/821580269286457347/821885546669408366/shaquille-oneal-music-videos.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/821885583546122240/images.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/821885653943189514/images.png",
+        "https://cdn.discordapp.com/attachments/821580269286457347/822255455035850762/unknown.png",
     ],
 }
 
@@ -181,8 +212,7 @@ exports.parseCommand = (msg) => {
     }
     if(msg.content.startsWith(PROMPTCHAR)){
         //Then process the potential command
-
-        let [cmdWord, ...args] = msg.content.split(/ +/); // split on spaces (not all whitespace)
+        let [cmdWord, ...args] = msg.content.trim().split(/ +/); // split on spaces (not all whitespace)
         cmdWord = cmdWord.slice(PROMPTCHAR.length).toLowerCase(); //get rid of the initial prompt char
         let cmdObj = commands[cmdWord];
         if(cmdObj) {
