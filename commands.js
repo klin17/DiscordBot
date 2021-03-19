@@ -111,7 +111,6 @@ const commands = {
     login: {
         usage: "login <password>",
         description: "logs in as bot admin until midnight",
-        restricted: true,
         action: (msg, cmdArgs) => {
             if(isPermAdmin(msg.author.id)) {
                 msg.channel.send("User is already permanent admin");
@@ -138,7 +137,18 @@ const commands = {
             } else if(isPermAdmin(user.id)) {
                 msg.channel.send("cannot revoke permanent admin privileges");
             } else {
-                revokeAdmin(user.id);
+                let perm = false;
+                if(cmdArgs[0] && cmdArgs[0] == "permanent"){
+                    perm = true;
+                }
+                if(revokeAdmin(user.id, perm)) {
+                    if(perm) {
+                        msg.channel.send(`Revoked permissions for <@${user.id}> permanently`)
+                    } else {
+                        msg.channel.send(`Revoked permissions for <@${user.id}>`)
+                    }
+                    
+                }
             }
         }
     },

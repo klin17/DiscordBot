@@ -8,6 +8,9 @@ exports.isAdmin = (id, pw) => {
     if(exports.isPermAdmin(id)) {
         return true;
     }
+    if(admins.noadd.includes(id)) {
+        return false;
+    }
     // check if PW correct
     if(pw && process.env.ADMIN_PASS) {
         // Update time stamp then return true
@@ -28,10 +31,13 @@ exports.isPermAdmin = (id) => {
 }
 
 // Removes timestamp
-exports.revokeAdmin = (id) => {
+exports.revokeAdmin = (id, perm) => {
     //only admins can revoke admin
     if(exports.isAdmin(id)) {
         admins[id] = undefined;
+        if(perm) {
+            admins.noadd.push(id);
+        }
         fs.writeFileSync('admins.json', JSON.stringify(admins, null, 4));
         return true;
     }
