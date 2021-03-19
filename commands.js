@@ -185,14 +185,15 @@ const keywords = {
                 rest = rest.slice(2, rest.length);
             }
             if(rest.length > 0) {
-                let fs = [];
+                let piclinks = [];
                 if(rest.includes("owa owa")) {
-                    fs.push(pickRandom(getPics["owa owa"]));
+                    piclinks.push(pickRandom(getPics["owa owa"]));
                 }
                 if(rest.includes("shaq")) {
-                    fs.push(pickRandom(getPics["shaq"]));
+                    piclinks.push(pickRandom(getPics["shaq"]));
                 }
-                msg.channel.send(rest, {files: fs});
+                msg.channel.send(rest);
+                msg.channel.send(piclinks);
             }
         }
     },
