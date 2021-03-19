@@ -116,7 +116,7 @@ const commands = {
                 msg.channel.send("User is already permanent admin");
             } else if(cmdArgs[0] && isAdmin(msg.author.id, cmdArgs[0])) {
                 msg.delete();
-                msg.channel.send(`User <@${mutee.id}> has bot admin privileges for 5 min`)
+                msg.channel.send(`User <@${msg.author.id}> has bot admin privileges for 5 min`)
                 msg.channel.send("User has bot admin privileges for 5 min");
             } else {
                 msg.channel.send("Incorrect password");
