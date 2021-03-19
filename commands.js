@@ -111,6 +111,7 @@ const commands = {
     login: {
         usage: "login <password>",
         description: "logs in as bot admin until midnight",
+        restricted: true,
         action: (msg, cmdArgs) => {
             if(isPermAdmin(msg.author.id)) {
                 msg.channel.send("User is already permanent admin");
@@ -157,7 +158,7 @@ const commands = {
         usage: "mute @<person>",
         description: "gives <person> the Muted roll",
         restricted: true,
-        action: (msg, cmd) => {
+        action: (msg, cmdArgs) => {
             const mutee = msg.mentions.members.first();
             if(!mutee) {
                 msg.channel.send("Don't forget to mention the person you want to mute");
