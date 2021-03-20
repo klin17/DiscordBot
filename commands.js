@@ -214,12 +214,26 @@ const commands = {
     unmute: {
         usage: "unmute @<person>",
         description: "removes the Muted role from <person>",
-        action: (msg, cmd) => {
+        action: (msg, args) => {
             const user = msg.mentions.members.first();
             let muterole = msg.guild.roles.cache.find(x => x.name === "Muted")
             user.roles.remove(muterole)
         },
     },
+
+    sadreact: {
+        usage: "sadreact",
+        description: "adds a sad react to previous message",
+        action: async (msg, cmdArgs) => {
+            await msg.channel.messages.fetch({limit: 2}).then(messages => {
+                if(messages.size == 2) {
+                    const arr = messages.array();
+                    arr[0].delete();
+                    arr[1].react(`😢`);
+                }
+            })
+        }
+    }
 }
 
 exports.parseCommand = (msg) => {

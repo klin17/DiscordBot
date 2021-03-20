@@ -2,7 +2,6 @@
 require('dotenv').config();
 const Discord = require('discord.js');
 const { parseCommand, parseKeyword } = require('./commands');
-const { strReplaceAll } = require('./utils');
 // Create instance of discord client
 const client = new Discord.Client();
 
@@ -12,7 +11,7 @@ client.on('ready', () => {
 });
 
 // Word/Phrase banning
-const bannedRegexStrings = ['a+r+(o+|0+)*u*n+d+ *((t+h+e*)|z+) *w+(o+|0+)*r+l+d+'];
+const bannedRegexStrings = ['a+ *r+ *(o+|0+)* *u*n+ *d+ *((t+h+(e|3)*)|z+) *w+ *(o+|0+)*r+ *l+ *d+'];
 
 function filterBannedStrings(msg) {
     bannedRegexStrings.forEach(s => {
