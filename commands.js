@@ -254,7 +254,6 @@ exports.parseCommand = (msg) => {
 const getPics = {
     "owa owa": [
         "https://cdn.discordapp.com/attachments/821835099456405504/821873042032558110/pudgywoke-tiktok-videos.jpg",
-        "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/ed982d1fc0483573a78f34824cb6b3e8~c5_720x720.jpeg?x-expires=1616115600&x-signature=JBa3WwoMJNT%2F4q2S2W2dmtsLXIg%3D",
         "https://pbs.twimg.com/profile_images/1337810830138744837/bxhDUW5-_400x400.jpg",
         "https://hashtaghyena.com/wp-content/uploads/2021/01/IMG_4374.jpeg",
         "https://media1.popsugar-assets.com/files/thumbor/lqNAj98ANxGQ7DycASpJsRkOQ00/fit-in/1024x1024/filters:format_auto-!!-:strip_icc-!!-/2021/01/12/187/n/1922243/addurlAw4hlQ/i/pudgywoke.jpg",
