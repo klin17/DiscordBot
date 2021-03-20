@@ -12,7 +12,7 @@ client.on('ready', () => {
 });
 
 // Word/Phrase banning
-const bannedRegexStrings = ['a+r+(o+|0+)*u*n+d+ +t+h+e* +w+(o+|0+)*r+l+d+'];
+const bannedRegexStrings = ['a+r+(o+|0+)*u*n+d+ *((t+h+e*)|z+) *w+(o+|0+)*r+l+d+'];
 
 function filterBannedStrings(msg) {
     bannedRegexStrings.forEach(s => {
