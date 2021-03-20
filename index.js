@@ -12,19 +12,17 @@ client.on('ready', () => {
 });
 
 // Word/Phrase banning
-const bannedStrings = ["around the world"];
+const bannedRegexStrings = ['a+r+(o+|0+)*u*n+d+ +t+h+e* +w+(o+|0+)*r+l+d+'];
 
 function filterBannedStrings(msg) {
-    let cleanedContent = msg.content.toLowerCase();
-    bannedStrings.forEach(s => {
-        cleanedContent = strReplaceAll(cleanedContent, s, "");
+    bannedRegexStrings.forEach(s => {
+        let regex = RegExp(s, "gi");
+        if(regex.test(msg.content)) {
+            msg.channel.send("A message was deleted because it contained a banned phrase");
+            msg.delete().catch(console.error);;
+            return true;
+        }
     })
-    if(cleanedContent !== msg.content.toLowerCase()) {
-        // could send the cleaned content to msg.channel
-        msg.channel.send("A message was deleted because it contained a banned phrase");
-        msg.delete().catch(console.error);;
-        return true;
-    }
     return false;
 }
 

@@ -263,7 +263,6 @@ const getPics = {
         "https://cdn.discordapp.com/attachments/821580269286457347/821884893038247946/image.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/821884935769948160/shaq1.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/821884960151175189/images.png",
-        "https://cdn.discordapp.com/attachments/821580269286457347/821885282986229770/shaq-endorsements.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/821885526897328178/shaquille-oneal-apjpg-9375ed782cfd464d.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/821885546669408366/shaquille-oneal-music-videos.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/821885583546122240/images.png",
