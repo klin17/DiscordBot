@@ -286,6 +286,11 @@ const getPics = {
     "bananya": [
         "https://tenor.com/view/banana-cat-cute-kawaii-gif-13326985",
         "https://tenor.com/view/bananya-banana-cat-kawaii-cute-gif-11155423",
+        "https://tenor.com/view/ck004-gif-8195459",
+        "https://tenor.com/view/bananya-banana-kittens-gif-13326982",
+        "https://tenor.com/view/cat-kitten-excited-happy-smile-gif-5681144",
+        "https://tenor.com/view/cute-cat-bananya-anime-kawaii-gif-5735863",
+        "https://tenor.com/view/bananya-banana-cat-cute-shining-eyes-gif-15873885",
     ]
 }
 
