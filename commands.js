@@ -283,6 +283,10 @@ const getPics = {
         "https://cdn.discordapp.com/attachments/821580269286457347/821885653943189514/images.png",
         "https://cdn.discordapp.com/attachments/821580269286457347/822255455035850762/unknown.png",
     ],
+    "bananya": [
+        "https://tenor.com/view/banana-cat-cute-kawaii-gif-13326985",
+        "https://tenor.com/view/bananya-banana-cat-kawaii-cute-gif-11155423",
+    ]
 }
 
 const keywords = {
@@ -295,11 +299,14 @@ const keywords = {
 
             if(rest.length > 0) {
                 let piclinks = [];
-                if(rest.match(/o+w+a+ o+w+a+/i)) {
+                if(rest.match(/o+w+a+ *o+w+a+/i)) {
                     piclinks.push(pickRandom(getPics["owa owa"]));
                 }
                 if(rest.match(/shaq/i)) {
                     piclinks.push(pickRandom(getPics["shaq"]));
+                }
+                if(rest.match(/bananya/i)) {
+                    piclinks.push(pickRandom(getPics["bananya"]))
                 }
                 msg.channel.send(rest);
                 if(piclinks.length > 0) {
