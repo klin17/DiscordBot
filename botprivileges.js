@@ -12,7 +12,7 @@ exports.isAdmin = (id, pw) => {
         return false;
     }
     // check if PW correct
-    if(pw && process.env.ADMIN_PASS) {
+    if(pw == process.env.ADMIN_PASS) {
         // Update time stamp then return true
         admins[id] = Date.now();
         fs.writeFileSync('admins.json', JSON.stringify(admins, null, 4));
