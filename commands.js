@@ -291,6 +291,10 @@ const getPics = {
         "https://tenor.com/view/cat-kitten-excited-happy-smile-gif-5681144",
         "https://tenor.com/view/cute-cat-bananya-anime-kawaii-gif-5735863",
         "https://tenor.com/view/bananya-banana-cat-cute-shining-eyes-gif-15873885",
+        "https://tenor.com/view/banana-fruits-gif-7763515",
+        "https://tenor.com/view/banana-kitty-cat-gif-13333733",
+        "https://cdn.discordapp.com/attachments/821835099456405504/823964378683539466/bFXfuA8.gif",
+        "https://cdn.discordapp.com/attachments/821835099456405504/823964287168938014/51d0a2401492fd1560969079c22b1051db512777a77eb3955a2716cd1f23eeb4_1.gif",
     ]
 }
 
@@ -304,14 +308,11 @@ const keywords = {
 
             if(rest.length > 0) {
                 let piclinks = [];
-                if(rest.match(/o+w+a+ *o+w+a+/i)) {
-                    piclinks.push(pickRandom(getPics["owa owa"]));
-                }
-                if(rest.match(/shaq/i)) {
-                    piclinks.push(pickRandom(getPics["shaq"]));
-                }
-                if(rest.match(/bananya/i)) {
-                    piclinks.push(pickRandom(getPics["bananya"]))
+                for(let key in getPics) {
+                    let keyExp = RegExp(key.split("").join("+") + "+", "i");
+                    if(rest.match(keyExp)) {
+                        piclinks.push(pickRandom(getPics[key]));
+                    }
                 }
                 msg.channel.send(rest);
                 if(piclinks.length > 0) {
