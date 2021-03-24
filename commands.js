@@ -1,4 +1,5 @@
 // imports
+const Discord = require('discord.js');
 const { pickRandom, strAfterRegex } = require("./utils");
 const { isAdmin, isPermAdmin, revokeAdmin } = require("./botprivileges");
 
@@ -19,8 +20,8 @@ function defaultBadArgResponse(msg, commandName) {
 */
 const commands = {
     echo: {
-        usage: "echo <argument>",
-        description: "bot replies with <argument>",
+        usage: "echo <...messages>",
+        description: "bot replies with <...messages>",
         action: (msg, cmdArgs) => {
             // send the cmdArgs joined back as one string
             let resp = cmdArgs.join(" ");
@@ -31,20 +32,38 @@ const commands = {
     },
 
     commands: {
-        usage: "commands",
-        description: "lists all commands currently available",
+        usage: "commands (all)",
+        description: "lists usages for unrestricted commands, or (all) commands",
         action: (msg, cmdArgs) => {
-            let commandsArray = [];
+            let usageHelp = "Parenthesis denotes optional arguments, angle brackets denote required arguments";
+            let unrestrictedCommandDescriptions = [];
+            let restrictedCommandDescriptions = [];
             for(let c in commands) {
-                commandsArray.push(c);
+                let commandDescription = "`" + PROMPTCHAR + commands[c].usage + "`";
+                if(commands[c].restricted){
+                    restrictedCommandDescriptions.push(commandDescription);
+                } else {
+                    unrestrictedCommandDescriptions.push(commandDescription);
+                }
             }
-            msg.channel.send("Commands: \n" + commandsArray.join("\n"));
+            let commandsEmbed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle('Command Usages')
+                .setDescription(usageHelp + "\n");
+            if(cmdArgs[0] == "all") {
+                commandsEmbed.addField("Open Access", unrestrictedCommandDescriptions.join("\n"));
+                commandsEmbed.addField("Restricted", restrictedCommandDescriptions.join("\n"));
+            } else {
+                commandsEmbed.setDescription(usageHelp + "\n\n" + unrestrictedCommandDescriptions.join("\n"));
+            }
+
+            msg.channel.send(commandsEmbed);
         }
     },
 
     help: {
-        usage: "help <optional cmd name>",
-        description: "sends the help message for a command, or lists commands",
+        usage: "help (command name)",
+        description: "sends description for (command), or lists commands",
         action: (msg, cmdArgs) => {
             if(cmdArgs.length > 0) {
                 // check if first arg is a command
@@ -66,7 +85,6 @@ const commands = {
     whoami: {
         usage: "whoami",
         description: "responds with username (or bot admin if applicable)",
-        restricted: true,
         action: (msg, cmdArgs) => {
             if(isAdmin(msg.author.id, cmdArgs[0])) {
                 msg.channel.send("bot admin");
@@ -114,7 +132,7 @@ const commands = {
 
     login: {
         usage: "login <password>",
-        description: "logs in as bot admin until midnight",
+        description: "logs in as bot admin for 5 min if <password> correct",
         action: (msg, cmdArgs) => {
             if(isPermAdmin(msg.author.id)) {
                 msg.channel.send("User is already permanent admin");
@@ -129,7 +147,7 @@ const commands = {
     },
 
     revoke: {
-        usage: "revoke permanent? @<user>",
+        usage: "revoke (permanent) @<user>",
         description: "revokes admin privileges from <user> if they are not perm admin",
         restricted: true,
         action: (msg, cmdArgs) => {
@@ -214,6 +232,7 @@ const commands = {
     unmute: {
         usage: "unmute @<person>",
         description: "removes the Muted role from <person>",
+        restricted: true,
         action: (msg, args) => {
             const user = msg.mentions.members.first();
             let muterole = msg.guild.roles.cache.find(x => x.name === "Muted")
@@ -232,6 +251,20 @@ const commands = {
                     arr[1].react(`😢`);
                 }
             })
+        }
+    },
+
+    dmme: {
+        usage: "dmme <message>",
+        description: "DMs command caller with <message>",
+        action: (msg, cmdArgs) => {
+            if(msg.author.dmChannel) {
+                msg.author.dmChannel.send(cmdArgs.join(" "));
+            } else {
+                msg.author.createDM().then(channel => {
+                    channel.send(cmdArgs.join(" "));
+                })
+            }
         }
     }
 }
