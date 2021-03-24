@@ -74,8 +74,13 @@ const commands = {
                 let command = commands[cmdArgs[0]];
                 if(command) {
                     // Send the usage and description for the found command
-                    msg.channel.send("Usage: " + PROMPTCHAR + command["usage"]);
-                    msg.channel.send(command["description"]);
+                    let commandsEmbed = new Discord.MessageEmbed()
+                        .setColor('#0099ff')
+                        .setTitle(PROMPTCHAR + cmdArgs[0])
+                        .addField("Usage", "`" + PROMPTCHAR + command.usage + "`")
+                        .addField("Description", command.description);
+
+                    msg.channel.send(commandsEmbed);
                 } else {
                     msg.channel.send("No match for command: " + cmdArgs[0]);
                 }
