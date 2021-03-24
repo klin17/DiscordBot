@@ -1,7 +1,7 @@
 // imports
 const Discord = require('discord.js');
-const { pickRandom, strAfterRegex } = require("./utils");
-const { isAdmin, isPermAdmin, revokeAdmin } = require("./botprivileges");
+const { pickRandom, strAfterRegex, dmUser } = require("./utils");
+const { isAdmin, isPermAdmin, revokeAdmin, getPermAdminIDs } = require("./botprivileges");
 
 // COMMANDS: --------------
 
@@ -15,13 +15,14 @@ function defaultBadArgResponse(msg, commandName) {
 /*  commandWord: {
         usage: String,
         description: String,
+        restricted?: boolean?,
         action: (msg: Message, cmdArgs: [String]) => void
     } 
 */
 const commands = {
     echo: {
-        usage: "echo <...messages>",
-        description: "bot replies with <...messages>",
+        usage: "echo <message>",
+        description: "bot replies with <message>",
         action: (msg, cmdArgs) => {
             // send the cmdArgs joined back as one string
             let resp = cmdArgs.join(" ");
@@ -33,9 +34,11 @@ const commands = {
 
     commands: {
         usage: "commands (all)",
-        description: "lists usages for unrestricted commands, or (all) commands",
+        description: "lists usages for unrestricted or (all) commands",
         action: (msg, cmdArgs) => {
             let usageHelp = "Parenthesis denotes optional arguments, angle brackets denote required arguments";
+
+            // Generate list of descriptions for restricted and unrestricted commands
             let unrestrictedCommandDescriptions = [];
             let restrictedCommandDescriptions = [];
             for(let c in commands) {
@@ -46,6 +49,7 @@ const commands = {
                     unrestrictedCommandDescriptions.push(commandDescription);
                 }
             }
+            // Create the embed
             let commandsEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle('Command Usages')
@@ -76,7 +80,7 @@ const commands = {
                     msg.channel.send("No match for command: " + cmdArgs[0]);
                 }
             } else {
-                //call $commands to list out all commands
+                //call $commands to list out all commands when no args
                 commands["commands"]["action"](msg, cmdArgs);
             }
         },
@@ -117,13 +121,16 @@ const commands = {
         description: "@s someone random in the server",
         restricted: true,
         action: (msg, cmdArgs) => {
+            // get all members of guild
             msg.guild.members.fetch().then(members => {
+                // filter out the bots
                 let humans = [];
                 members.forEach(m => {
                     if(!m.user.bot) {
                         humans.push(m.user);
                     }
                 })
+                // @ random choice from users
                 let randID = pickRandom(humans).id;
                 msg.channel.send(`HI <@${randID}>`);
             });
@@ -140,6 +147,14 @@ const commands = {
                 msg.delete();
                 msg.channel.send(`User <@${msg.author.id}> has bot admin privileges for 5 min`)
                 msg.channel.send("User has bot admin privileges for 5 min");
+
+                // DM permadmins that someone logged in
+                let permadminids = getPermAdminIDs();
+                permadminids.forEach(id => {
+                    msg.client.users.fetch(id).then(permadmin => {
+                        dmUser(permadmin, `${msg.author.username} logged in as admin`);
+                    });
+                })
             } else {
                 msg.channel.send("Incorrect password");
             }
@@ -159,6 +174,7 @@ const commands = {
             } else if(isPermAdmin(user.id)) {
                 msg.channel.send("cannot revoke permanent admin privileges");
             } else {
+                // decide if (permanent) arg is there
                 let perm = false;
                 if(cmdArgs[0] && cmdArgs[0] == "permanent"){
                     perm = true;
@@ -169,7 +185,6 @@ const commands = {
                     } else {
                         msg.channel.send(`Revoked permissions for <@${user.id}>`)
                     }
-                    
                 }
             }
         }
@@ -258,13 +273,7 @@ const commands = {
         usage: "dmme <message>",
         description: "DMs command caller with <message>",
         action: (msg, cmdArgs) => {
-            if(msg.author.dmChannel) {
-                msg.author.dmChannel.send(cmdArgs.join(" "));
-            } else {
-                msg.author.createDM().then(channel => {
-                    channel.send(cmdArgs.join(" "));
-                })
-            }
+            dmUser(msg.author, cmdArgs.join(" "));
         }
     }
 }
@@ -348,9 +357,7 @@ const keywords = {
                     }
                 }
                 msg.channel.send(rest);
-                if(piclinks.length > 0) {
-                    msg.channel.send(piclinks);
-                }
+                piclinks.forEach(link => msg.channel.send(link));
             }
         }
     },

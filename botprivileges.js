@@ -43,3 +43,16 @@ exports.revokeAdmin = (id, perm) => {
     }
     return false;
 }
+
+exports.getPermAdminIDs = () => {
+    let perms = [];
+    for(let field in admins) {
+        if(field != "noadd") {
+            //then it is a user
+            if(admins[field] == -1) {
+                perms.push(field);
+            }
+        }
+    }
+    return perms;
+}

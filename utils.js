@@ -33,3 +33,12 @@ exports.regexIndexOf = (string, regex, startpos) => {
 exports.pickRandom = (arr) => {
     return arr[Math.floor(Math.random() * arr.length)];
 }
+
+// sends a DM from bot to user
+exports.dmUser = (userObj, content, options) => {
+    if(userObj.dmChannel) {
+        userObj.dmChannel.send(content, options);
+    } else {
+        userObj.createDM().then(channel => channel.send(content, options));
+    }
+}
