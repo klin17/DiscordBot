@@ -1,5 +1,5 @@
 const { defaultBadArgResponse } = require("../botActions");
-const { isPermAdmin, revokeAdmin } = require("../botPrivileges");
+const { isPermAdmin, revokeAdmin } = require("../privileges");
 
 module.exports = {
     name: "revoke",

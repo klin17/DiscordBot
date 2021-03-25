@@ -1,4 +1,4 @@
-const { isAdmin } = require("../botPrivileges");
+const { isAdmin } = require("../privileges");
 
 module.exports = {
     name: "whoami",

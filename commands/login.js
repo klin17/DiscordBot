@@ -1,4 +1,4 @@
-const { getPermAdminIDs, isPermAdmin, isAdmin } = require("../botPrivileges");
+const { getPermAdminIDs, isPermAdmin, isAdmin } = require("../privileges");
 const { dmUser } = require("../utils");
 
 module.exports = {

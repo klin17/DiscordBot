@@ -1,8 +1,7 @@
 // imports
 const Discord = require('discord.js');
-const fs = require('fs');
-const { pickRandom, strAfterRegex, dmUser, getCommands } = require("./utils");
-const { isAdmin, isPermAdmin, revokeAdmin, getPermAdminIDs } = require("./botPrivileges");
+const { pickRandom, getCommands } = require("./utils");
+const { isAdmin } = require("./privileges");
 
 // COMMAND HANDLING: --------------
 
