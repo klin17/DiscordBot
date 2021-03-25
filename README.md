@@ -6,7 +6,7 @@ https://discord.com/oauth2/authorize?client_id=821816503791124523&scope=bot&perm
 Ideas and things to maybe add:
  - [x] logging in as bot admin
  - [x] polling
- - [ ] batch commands
+ - [ ] ~~batch commands~~ (conflicts with $echo msgWithComma)
  - [ ] $ban and $unban
  - [ ] add Time parameter for revoke
  - [x] DM permadmins when $login succcessful
@@ -15,3 +15,4 @@ Ideas and things to maybe add:
  - [ ] $keywords, to list keywords
  - [ ] Reaction from command caller dismisses bot response message
  - [ ] Be able to disable commands/keywords
+ - [x] Move commands into separate files

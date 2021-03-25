@@ -1,3 +1,6 @@
+//imports
+const fs = require('fs');
+
 
 // returns original, with all the substrings matching replacee with replacewith
 exports.strReplaceAll = (original, replacee, replacewith) => {
@@ -41,4 +44,14 @@ exports.dmUser = (userObj, content, options) => {
     } else {
         userObj.createDM().then(channel => channel.send(content, options));
     }
+}
+
+exports.getCommands = () => {
+    const commands = {};
+    const commandFiles = fs.readdirSync('./commands').filter(f => f.endsWith('.js'));
+    for(const f of commandFiles) {
+        const commandObj = require(`./commands/${f}`);
+        commands[commandObj.name] = commandObj;
+    }
+    return commands;
 }

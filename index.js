@@ -1,7 +1,7 @@
 //imports
 require('dotenv').config();
 const Discord = require('discord.js');
-const { parseCommand, parseKeyword } = require('./commands');
+const { parseCommand, parseKeyword } = require('./botActions');
 // Create instance of discord client
 const client = new Discord.Client();
 

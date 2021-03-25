@@ -44,6 +44,7 @@ exports.revokeAdmin = (id, perm) => {
     return false;
 }
 
+// Returns an array of IDs (numbers) for permanent bot admins
 exports.getPermAdminIDs = () => {
     let perms = [];
     for(let field in admins) {
