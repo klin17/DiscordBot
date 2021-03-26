@@ -8,6 +8,9 @@ module.exports = {
         let muterole = msg.guild.roles.cache.find(x => x.name === "Muted")
         if(muterole) {
             user.roles.remove(muterole)
+            msg.channel.send(`Unmuted <@${user.id}>`)
+        } else {
+            msg.channel.send("User is not muted");
         }
     },
 }

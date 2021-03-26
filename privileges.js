@@ -4,7 +4,6 @@ const fs = require('fs');
 
 // returns if user with id <id> is an admin, with optional param pw
 exports.isAdmin = (id, pw) => {
-    console.log("isAdmin called");
     if(exports.isPermAdmin(id)) {
         return true;
     }

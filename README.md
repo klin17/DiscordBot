@@ -12,6 +12,7 @@ Please make sure to run `npm install` to install the required packages before te
  - [x] polling
  - [ ] ~~batch commands~~ (conflicts with $echo msgWithComma)
  - [ ] $ban and $unban
+ - [ ] $kick
  - [ ] add Time parameter for revoke
  - [x] DM permadmins when $login succcessful
  - [ ] Extend reaction functionality
@@ -20,3 +21,6 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] Reaction from command caller dismisses bot response message
  - [ ] Be able to disable commands/keywords
  - [x] Move commands into separate files
+ - [ ] Prevent word banning in DMs to bot
+ - [ ] Prevent commands in DMs?
+ - [ ] Use nickname and add guild info to $login notification

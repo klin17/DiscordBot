@@ -12,12 +12,13 @@ exports.defaultBadArgResponse = (msg, commandName) => {
     msg.channel.send("Use " + PROMPTCHAR + "help " + commandName + ", for more info");
 }
 
-// command format:
-/*  commandWord: {
+// command object format:
+/*  commandName: {
+        name: String,
         usage: String,
         description: String,
         restricted?: boolean?,
-        action: (msg: Message, cmdArgs: [String]) => void
+        action: (msg: Message, cmdArgs: String[]) => void
     } 
 */
 const commands = getCommands();

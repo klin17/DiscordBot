@@ -17,8 +17,9 @@ function filterBannedStrings(msg) {
     bannedRegexStrings.forEach(s => {
         let regex = RegExp(s, "gi");
         if(regex.test(msg.content)) {
-            msg.channel.send("A message was deleted because it contained a banned phrase");
-            msg.delete().catch(console.error);;
+            msg.delete().then(message => {
+                message.channel.send("A message was deleted because it contained a banned phrase");
+            }).catch(console.error);;
             return true;
         }
     })

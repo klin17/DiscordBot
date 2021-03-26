@@ -12,8 +12,9 @@ module.exports = {
         } else {
             // delete num lines
             await msg.channel.messages.fetch({limit: num}).then(messages => {
-                msg.channel.bulkDelete(messages);
-                msg.channel.send("Removed " + messages.size.toString() + " messages!");
+                msg.channel.bulkDelete(messages)
+                    .then(delMessages => msg.channel.send("Removed " + messages.size.toString() + " messages!"))
+                    .catch(console.error);
             })
         }
     }
