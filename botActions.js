@@ -83,7 +83,10 @@ const getPics = {
         "https://tenor.com/view/banana-kitty-cat-gif-13333733",
         "https://cdn.discordapp.com/attachments/821835099456405504/823964378683539466/bFXfuA8.gif",
         "https://cdn.discordapp.com/attachments/821835099456405504/823964287168938014/51d0a2401492fd1560969079c22b1051db512777a77eb3955a2716cd1f23eeb4_1.gif",
-    ]
+    ],
+    "gibby": [
+        "https://tenor.com/view/gibby-gif-8339722",
+    ],
 }
 
 const keywords = {

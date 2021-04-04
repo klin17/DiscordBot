@@ -24,3 +24,4 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] Prevent word banning in DMs to bot
  - [ ] Prevent commands in DMs?
  - [ ] Use nickname and add guild info to $login notification
+ - [ ] Add "Use $help (commandName) for info on a specific command" to $commands embed
