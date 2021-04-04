@@ -86,6 +86,14 @@ const getPics = {
     ],
     "gibby": [
         "https://tenor.com/view/gibby-gif-8339722",
+        "https://tenor.com/view/excited-happy-sexy-dance-funny-gif-12655757",
+        "https://tenor.com/view/icarly-fall-down-faceplant-fall-falling-down-gif-17810175",
+        "https://tenor.com/view/im-awesome-mom-mommas-boy-gif-10631335",
+        "https://tenor.com/view/gibby-gif-8339724",
+        "https://tenor.com/view/gibbeh-gibby-my-beloved-joejoe-gif-20648194",
+        "https://tenor.com/view/gibby-gif-8339686",
+        "https://tenor.com/view/happy-birthday-gif-4211526",
+        "https://tenor.com/view/spencer-stop-sign-april-fools-gif-20077049",
     ],
 }
 
