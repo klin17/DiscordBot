@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const { PROMPTCHAR } = require('../botActions.js');
 const { getCommands } = require("../utils.js");
+const disabled = require('../disabled.json');
 
 module.exports = {
     name: "commands",
@@ -9,28 +10,34 @@ module.exports = {
     action: (msg, cmdArgs) => {
         let usageHelp = "Parenthesis denotes optional arguments, angle brackets denote required arguments";
 
-        // Generate list of descriptions for restricted and unrestricted commands
-        let unrestrictedCommandDescriptions = [];
-        let restrictedCommandDescriptions = [];
+        // Generate list of descriptions for all commands, placing into arrays by status
+        let unrestrictedDescriptions = [];
+        let restrictedDescriptions = [];
+        let disabledDescriptions = [];
         const commands = getCommands();
         for(let c in commands) {
             let commandDescription = "`" + PROMPTCHAR + commands[c].usage + "`";
-            if(commands[c].restricted){
-                restrictedCommandDescriptions.push(commandDescription);
+            if(disabled.disabled.includes(commands[c].name)) {
+                disabledDescriptions.push(commandDescription);
+            } else if(commands[c].restricted){
+                restrictedDescriptions.push(commandDescription);
             } else {
-                unrestrictedCommandDescriptions.push(commandDescription);
+                unrestrictedDescriptions.push(commandDescription);
             }
         }
         // Create the embed
         let commandsEmbed = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Command Usages')
-            .setDescription(usageHelp + "\n");
+            .setDescription(usageHelp + "\n")
+            .setFooter('Use `$help (commandName)` for info on a specific command');
         if(cmdArgs[0] == "all") {
-            commandsEmbed.addField("Open Access", unrestrictedCommandDescriptions.join("\n"));
-            commandsEmbed.addField("Restricted", restrictedCommandDescriptions.join("\n"));
+            commandsEmbed.addField("Open Access", unrestrictedDescriptions.join("\n"));
+            commandsEmbed.addField("Restricted", restrictedDescriptions.join("\n"));
+            let disabledFieldContent = disabledDescriptions.length > 0 ? disabledDescriptions.join("\n") : "No disabled commands";
+            commandsEmbed.addField("Disabled", disabledFieldContent);
         } else {
-            commandsEmbed.setDescription(usageHelp + "\n\n" + unrestrictedCommandDescriptions.join("\n"));
+            commandsEmbed.setDescription(usageHelp + "\n\n" + unrestrictedDescriptions.join("\n"));
         }
 
         msg.channel.send(commandsEmbed);

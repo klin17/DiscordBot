@@ -26,10 +26,10 @@ Please make sure to run `npm install` to install the required packages before te
  - [x] Add embed for $help
  - [ ] $keywords, to list keywords
  - [ ] Reaction from command caller dismisses bot response message
- - [ ] Be able to disable commands/keywords
+ - [x] Be able to disable commands/keywords
  - [x] Move commands into separate files
  - [ ] Prevent word banning in DMs to bot
  - [ ] Prevent commands in DMs?
  - [ ] Use nickname and add guild info to $login notification
- - [ ] Add "Use $help (commandName) for info on a specific command" to $commands embed
+ - [x] Add "Use $help (commandName) for info on a specific command" to $commands embed
  - [ ] Add \<from> and \<to> parameters to $prune

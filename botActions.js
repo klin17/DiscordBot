@@ -2,6 +2,7 @@
 const Discord = require('discord.js');
 const { pickRandom, getCommands } = require("./utils");
 const { isAdmin } = require("./privileges");
+const disabled = require("./disabled.json");
 
 // COMMAND HANDLING: --------------
 
@@ -33,13 +34,25 @@ exports.parseCommand = (msg) => {
         cmdWord = cmdWord.slice(PROMPTCHAR.length).toLowerCase(); //get rid of the initial prompt char
         let cmdObj = commands[cmdWord];
         if(cmdObj) {
+            // handle restrictions on commands
             if(cmdObj.restricted) {
                 //check if author is bot admin
                 if(!isAdmin(msg.author.id)) {
                     console.log("non admin attempt to run command: " + cmdWord);
+                    msg.channel.send("Command: " + cmdWord + "  is restricted");
                     return;
                 }
             }
+            // handle disabled commands
+            if(disabled.disabled.includes(cmdWord)) {
+                console.log("command: " + cmdWord + "is disabled");
+                msg.channel.send("Command: " + cmdWord + " is disabled");
+                return;
+            } else {
+                console.log("disabled array: ");
+                console.log(disabled.disabled);
+            }
+            // call the command action
             console.log("calling " + cmdWord + " with args: ");
             console.log(args)
             cmdObj.action(msg, args);
