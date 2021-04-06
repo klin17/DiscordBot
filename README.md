@@ -20,16 +20,17 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] ~~batch commands~~ (conflicts with $echo msgWithComma)
  - [ ] $ban and $unban
  - [ ] $kick
- - [ ] add Time parameter for revoke
+ - [ ] Add (time) parameter for revoke
  - [x] DM permadmins when $login succcessful
  - [ ] Extend reaction functionality
  - [x] Add embed for $help
  - [ ] $keywords, to list keywords
  - [ ] Reaction from command caller dismisses bot response message
- - [x] Be able to disable commands/keywords
+ - [x] Be able to disable commands
+ - [ ] Be able to disable keywords
  - [x] Move commands into separate files
  - [ ] Prevent word banning in DMs to bot
  - [ ] Prevent commands in DMs?
  - [ ] Use nickname and add guild info to $login notification
  - [x] Add "Use $help (commandName) for info on a specific command" to $commands embed
- - [ ] Add \<from> and \<to> parameters to $prune
+ - [ ] Add (from) and (to) parameters to $prune

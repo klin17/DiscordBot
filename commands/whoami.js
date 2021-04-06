@@ -5,10 +5,13 @@ module.exports = {
     usage: "whoami",
     description: "responds with username (or bot admin if applicable)",
     action: (msg, cmdArgs) => {
-        if(isAdmin(msg.author.id, cmdArgs[0])) {
-            msg.channel.send("bot admin");
-        } else {
-            msg.channel.send("User: " + msg.author.username);
-        }
+        // Get name info for msg author
+        let username = msg.author.username;
+        let nickname = msg.member.nickname;
+        const name = nickname ? nickname + " (" + username + ")": username;
+        // Get whether user is bot admin or not
+        const label = isAdmin(msg.author.id, cmdArgs[0]) ? "Bot Admin: " : "User: ";
+        // Send the information
+        msg.channel.send(label + name);
     },
 }

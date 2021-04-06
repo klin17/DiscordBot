@@ -13,11 +13,16 @@ module.exports = {
             msg.channel.send(`User <@${msg.author.id}> has bot admin privileges for 5 min`)
             msg.channel.send("User has bot admin privileges for 5 min");
 
+            // Get name info for msg author
+            let username = msg.author.username;
+            let nickname = msg.member.nickname;
+            const name = nickname ? nickname + " (" + username + ")": username;
+
             // DM permadmins that someone logged in
             let permadminids = getPermAdminIDs();
             permadminids.forEach(id => {
                 msg.client.users.fetch(id).then(permadmin => {
-                    dmUser(permadmin, `${msg.author.username} logged in as admin`);
+                    dmUser(permadmin, `${name} logged in as admin`);
                 });
             })
         } else {
