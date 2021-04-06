@@ -16,10 +16,7 @@ module.exports = {
             msg.channel.send("cannot revoke permanent admin privileges");
         } else {
             // decide if (permanent) arg is there
-            let perm = false;
-            if(cmdArgs[0] && cmdArgs[0] == "permanent"){
-                perm = true;
-            }
+            let perm = cmdArgs[0] && cmdArgs[0] == "permanent";
             if(revokeAdmin(user.id, perm)) {
                 if(perm) {
                     msg.channel.send(`Revoked permissions for <@${user.id}> permanently`)

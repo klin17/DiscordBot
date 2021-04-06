@@ -31,6 +31,7 @@ Please make sure to run `npm install` to install the required packages before te
  - [x] Move commands into separate files
  - [ ] Prevent word banning in DMs to bot
  - [ ] Prevent commands in DMs?
- - [ ] Use nickname and add guild info to $login notification
+ - [x] Use nickname to $login notification and $whoami
+ - [ ] Pull out enabled/disabled handler into separate file (maybe: commandStatus.js ?)
  - [x] Add "Use $help (commandName) for info on a specific command" to $commands embed
  - [ ] Add (from) and (to) parameters to $prune
