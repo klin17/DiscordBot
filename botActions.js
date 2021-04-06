@@ -58,7 +58,6 @@ exports.parseCommand = (msg) => {
             cmdObj.action(msg, args);
         } else {
             console.log("command: " + cmdWord + " was not found");
-            console.log(commands);
         }
     }
 }
