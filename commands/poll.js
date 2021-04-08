@@ -23,7 +23,7 @@ module.exports = {
             // Send the pollstring and add reactions
             await msg.channel.send(pollString).then(sentMessage => {
                 cmdArgs.forEach((val, i) => sentMessage.react(getNumEmoji(i)));
-                msg.delete({ timeout: 1500 }).catch(console.error);
+                // msg.delete({ timeout: 1500 }).catch(console.error);
             });
         } else {
             defaultBadArgResponse(msg, "poll");
