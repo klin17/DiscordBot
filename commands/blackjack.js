@@ -126,7 +126,11 @@ class Blackjack {
     }
 
     sayTurn() {
-        this.channel.send("It's " + this.curPlayer().name + "'s turn");
+        if(this.numBets == this.players.length) {
+            this.channel.send("It's " + this.curPlayer().name + "'s turn to hit/stay");
+        } else {
+            this.channel.send("It's " + this.curPlayer().name + "'s turn to bet");
+        }
     }
 
     hit() {
@@ -147,31 +151,48 @@ class Blackjack {
         if(this.checkWinners()){
             return;
         }
-        // check if one player left unbusted
-        if(this.bust.length >= this.players.length - 1) {
-            console.log("there is no next player");
-            const winner = this.players.find(p => !this.bust.some(bp => bp.name == p.name));
-            let numNonwinners = this.players.reduce((acc, p) => p.name !== winner.name ? acc + 1 : acc, 0);
-            const winnings = winner.bet * (numNonwinners + 1); 
-            this.channel.send("Winner is: " + winner.name + " who bet: " + winner.bet.toString());
-            this.channel.send("You won: " + winnings.toString());
-            this.finished = true;
-            console.log("finished from busting");
-            return;
-        }
-        // if curplayer is bust, go to next player
-        if(this.bust.some(p => p.name == this.curPlayer().name)) {
-            this.nextPlayer();
-        } else {
-            this.sayTurn();
-        }
+        
+        this.sayTurn();
+        // // if curplayer is bust, go to next player
+        // if(this.bust.some(p => p.name == this.curPlayer().name)) {
+        //     this.nextPlayer();
+        // } else {
+        //     this.sayTurn();
+        // }
     }
 
     stay() {
         this.nextPlayer();
     }
 
+    handlePoints(winners) {
+        const numNonwinners = this.players.reduce((acc, p) => winners.includes(p) ? acc : acc + 1, 0);
+        const winningsString = winners.reduce((acc, w) => acc + w.name + " won: " + (w.bet * (numNonwinners + 1)).toString() + " ", "");
+        this.players.forEach(p => p.points -= p.bet);
+        winners.forEach(w => w.points += w.bet * (numNonwinners + 1));
+
+        for(let i in this.players) {
+            if(this.players[i].points == 0) {
+                this.channel.send("Players: " + this.players[i].name + " has 0 points. Bye!");
+                this.players.splice(i, 1); 
+            }
+        }
+
+        this.channel.send(winningsString);
+    }
+
     checkWinners() {
+        //// check if one player left unbusted
+        if(this.bust.length >= this.players.length - 1) {
+            console.log("there is no next player");
+            const winner = this.players.find(p => !this.bust.some(bp => bp.name == p.name));
+            this.channel.send("Winner is: " + winner.name + " who bet: " + winner.bet.toString());
+            this.handlePoints([winner]);
+            this.finished = true;
+            console.log("finished from busting");
+            return true;
+        }
+
         //check for everyone having finished
         if(this.curPlayer() === undefined) {
             // everyone is done playing
@@ -191,22 +212,16 @@ class Blackjack {
             if(winners.length < 1) {
                 console.error("This should not happen ??");
             }
-            this.players.forEach(p => p.points -= p.bet);
-            let numNonwinners = this.players.reduce((acc, p) => winners.includes(p) ? acc : acc + 1, 0);
             if(winners.length == 1) {
                 const winner = winners[0];
                 this.channel.send("The winner is: " + winner.name + " who bet: " + winner.bet.toString());
-                this.channel.send("You won: " + (winner.bet*(numNonwinners + 1)).toString());
-                winner.points += winner.bet*(numNonwinners + 1);
                 console.log("Only one winner");
             } else {
                 const winnersString = winners.reduce((acc, e) => acc + e.name + ": bet- " + e.bet.toString(), "");
                 this.channel.send("We have a tie! Winners: " + winnersString);
-                const winningsString = winners.reduce((acc, w) => acc + w.name + " won: " + (w.bet * (numNonwinners + 1)).toString() + " ", "");
-                this.channel.send(winningsString);
-                winners.forEach(w => w.points += w.bet * (numNonwinners + 1));
                 console.log("Tied winners");
             }
+            this.handlePoints(winners)
             this.finished = true;
             console.log("finished from everyone playing");
             return true;
@@ -249,9 +264,9 @@ class Blackjack {
         }
         this.curPlayer().bet = amount;
         this.channel.send(this.curPlayer().name + " bet: " + amount.toString());
-        this.turn++;
+        this.turn++; // I think this can be deleted?
         this.numBets++;
-        if(this.turn == this.players.length) {
+        if(this.numBets == this.players.length) {
             this.turn = 0;
         }
         this.sayTurn();
