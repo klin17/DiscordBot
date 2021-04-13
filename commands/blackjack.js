@@ -51,6 +51,26 @@ function cardValue(cardString, high=true) {
     return n;
 }
 
+function prettyCard(cardString) {
+    let suit = cardString.charAt(1);
+    if(suit == "C") {
+        suit = "♣️";
+    } else if (suit == "D") {
+        suit = "♦";
+    } else if (suit == "H") {
+        suit = "♥️";
+    } else if (suit == "S") {
+        suit = "♠️";
+    } else {
+        suit = "?";
+    }
+    let numString = cardString.charAt(0);
+    if(numString == "0") {
+        numString = "10"
+    }
+    return numString + suit;
+}
+
 const initialDeck = [
     "0S", "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "JS", "QS", "KS",
     "0H", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "JH", "QH", "KH",
@@ -103,22 +123,27 @@ class Blackjack {
 
 	showCards() {
 		for(let p of this.players) {
-            let res = p.hand.length > 0 ? p.hand.join(" ") : "no cards";
+            let res = p.hand.length > 0 ? p.hand.map(prettyCard).join(", ") : "no cards";
 			this.channel.send(p.name + ": " + res +" - " + p.sumHand().toString());
 		}
 	}
 
 	dealInitial() {
-		this.dealOne(); this.dealOne();
-        const naturals = this.players.filter(p => p.sumHand() == 21);
+		this.dealOne();
         this.showCards();
+        this.sayTurn();
+	}
+
+    dealSecond() {
+        this.dealOne();
+        this.showCards();
+        const naturals = this.players.filter(p => p.sumHand() == 21);
         if(naturals.length > 0) {
             naturals.forEach(p => this.channel.send(p.name + " has a blackjack!"));
+            this.handlePoints(naturals);
             this.finished = true;
-        } else {
-            this.sayTurn();
         }
-	}
+    }
 
     curPlayer() {
         return this.players[this.turn];
@@ -148,17 +173,9 @@ class Blackjack {
 
     nextPlayer() {
         this.turn++;
-        if(this.checkWinners()){
-            return;
+        if(!this.checkWinners()) {
+            this.sayTurn();
         }
-        
-        this.sayTurn();
-        // // if curplayer is bust, go to next player
-        // if(this.bust.some(p => p.name == this.curPlayer().name)) {
-        //     this.nextPlayer();
-        // } else {
-        //     this.sayTurn();
-        // }
     }
 
     stay() {
@@ -166,64 +183,59 @@ class Blackjack {
     }
 
     handlePoints(winners) {
+        if(winners.length < 1) {
+            console.error("This should not happen ??");
+            return;
+        }
+        // State who won and their bets
+        if(winners.length == 1) {
+            const winner = winners[0];
+            this.channel.send("The winner is: " + winner.name + " who bet: " + winner.bet.toString());
+            console.log("Only one winner");
+        } else {
+            const winnersString = winners.reduce((acc, e) => acc + e.name + ": bet- " + e.bet.toString(), "");
+            this.channel.send("We have a tie! Winners: " + winnersString);
+            console.log("Tied winners");
+        }
+        // Calculate and say the winnings for each winner
         const numNonwinners = this.players.reduce((acc, p) => winners.includes(p) ? acc : acc + 1, 0);
         const winningsString = winners.reduce((acc, w) => acc + w.name + " won: " + (w.bet * (numNonwinners + 1)).toString() + " ", "");
+        this.channel.send(winningsString);
         this.players.forEach(p => p.points -= p.bet);
         winners.forEach(w => w.points += w.bet * (numNonwinners + 1));
-
+        // Remove players with 0 points left
         for(let i in this.players) {
             if(this.players[i].points == 0) {
                 this.channel.send("Players: " + this.players[i].name + " has 0 points. Bye!");
                 this.players.splice(i, 1); 
+                if(this.players.length == 1) {
+                    this.channel.send("Congratulations " + this.players[0].name + "! You won the whole game!");
+                }
             }
         }
-
-        this.channel.send(winningsString);
     }
 
     checkWinners() {
-        //// check if one player left unbusted
-        if(this.bust.length >= this.players.length - 1) {
-            console.log("there is no next player");
-            const winner = this.players.find(p => !this.bust.some(bp => bp.name == p.name));
-            this.channel.send("Winner is: " + winner.name + " who bet: " + winner.bet.toString());
-            this.handlePoints([winner]);
-            this.finished = true;
-            console.log("finished from busting");
-            return true;
-        }
-
-        //check for everyone having finished
-        if(this.curPlayer() === undefined) {
-            // everyone is done playing
+        // check for if game over conditions
+        if(this.curPlayer() === undefined || this.bust.length >= this.players.length - 1) {
+            // everyone finished or only one player left unbusted
             let winners = [];
             let maxscore = 0;
             for(let p of this.players) {
                 if(this.bust.some(bp => bp.name == p.name)) {
                     continue; // this player is busted
                 }
-                if(p.sumHand() > maxscore) {
-                    maxscore = p.sumHand();
+                let handsum = p.sumHand();
+                if(handsum > maxscore) {
+                    maxscore = handsum;
                     winners = [p];
-                } else if(p.sumHand() == maxscore) {
+                } else if(handsum == maxscore) {
                     winners.push(p);
                 }
             }
-            if(winners.length < 1) {
-                console.error("This should not happen ??");
-            }
-            if(winners.length == 1) {
-                const winner = winners[0];
-                this.channel.send("The winner is: " + winner.name + " who bet: " + winner.bet.toString());
-                console.log("Only one winner");
-            } else {
-                const winnersString = winners.reduce((acc, e) => acc + e.name + ": bet- " + e.bet.toString(), "");
-                this.channel.send("We have a tie! Winners: " + winnersString);
-                console.log("Tied winners");
-            }
             this.handlePoints(winners)
             this.finished = true;
-            console.log("finished from everyone playing");
+            console.log("Game finished");
             return true;
         }
         return false;
@@ -264,10 +276,11 @@ class Blackjack {
         }
         this.curPlayer().bet = amount;
         this.channel.send(this.curPlayer().name + " bet: " + amount.toString());
-        this.turn++; // I think this can be deleted?
+        this.turn++; 
         this.numBets++;
         if(this.numBets == this.players.length) {
             this.turn = 0;
+            this.dealSecond();
         }
         this.sayTurn();
         return true;
@@ -281,48 +294,39 @@ class Blackjack {
 let prevGame = new Blackjack(undefined, []);
 let curGame = new Blackjack(undefined, []);
 
+const needsRunningGame = ["hit", "stay", "bet", "deck", "cards", "points", "turn"];
+const needsActivePlayer = ["hit", "stay", "bet"];
+
 module.exports = {
     name: "blackjack",
     usage: "blackjack (startingPoints) @<player1> @<player2> ... | hit | stay | restart | next",
     description: "starts blackjack game with mentioned players",
     action: (msg, cmdArgs) => {
         let arg = cmdArgs[0].toLowerCase();
+        if(curGame === undefined && needsRunningGame.includes(arg)) {
+            msg.channel.send("No current game running");
+            return;
+        }
+        if(needsActivePlayer.includes(arg) && msg.author.username !== curGame?.curPlayer().name) {
+            msg.channel.send("Current active player is: " + curGame?.curPlayer().name);
+            return;
+        }
         
         if(arg == "hit") {
-            if(curGame === undefined) {
-                msg.channel.send("No current game running");
-                return;
-            }
-            if(msg.author.username == curGame?.curPlayer().name) {
-                if(curGame?.isBetting()) {
-                    msg.channel.send("All players must bet before hitting can start");
-                } else {
-                    curGame?.hit();
-                }
+            if(curGame?.isBetting()) {
+                msg.channel.send("All players must bet before hitting can start");
             } else {
-                msg.channel.send("Current active player is: " + curGame?.curPlayer().name);
+                curGame?.hit();
             }
         } else if (arg == "stay"){
-            if(curGame === undefined) {
-                msg.channel.send("No current game running");
-                return;
-            }
-            if(msg.author.username == curGame?.curPlayer().name) {
-                if(curGame?.isBetting()) {
-                    msg.channel.send("All players must bet before game can start");
-                } else {
-                    curGame?.stay();
-                }
+            if(curGame?.isBetting()) {
+                msg.channel.send("All players must bet before game can start");
             } else {
-                msg.channel.send("Current active player is: " + curGame?.curPlayer().name);
+                curGame?.stay();
             }
         } else if (arg == "bet") {
             if(!curGame?.isBetting()) {
                 msg.channel.send("Current game already received bets");
-                return;
-            }
-            if(msg.author.username !== curGame?.curPlayer().name) {
-                msg.channel.send("Active player is: " + curGame?.curPlayer().name);
                 return;
             }
             let amount = parseInt(cmdArgs[1]);
@@ -331,7 +335,7 @@ module.exports = {
             } else if (amount < 1) {
                 msg.channel.send("Please bet a positive integer amount");
             } else {
-                curGame.bet(amount);
+                curGame?.bet(amount);
             }
         } else if (arg == "restart") {
             curGame = new Blackjack(msg.channel, prevGame.players);
@@ -344,9 +348,6 @@ module.exports = {
                 curGame.copyState(prevGame);
                 curGame.newRound();
                 curGame.dealInitial();
-                console.log("curgame is now: ");
-                console.log(curGame);
-                console.log(curGame === undefined);
             } else {
                 if(prevGame === undefined) {
                     msg.channel.send("Start a game first");
@@ -360,6 +361,8 @@ module.exports = {
             curGame?.showCards();
         } else if (arg == "points") {
             curGame?.showPoints();
+        } else if (arg == "turn") {
+            curGame?.sayTurn();
         } else {
             const users = msg.mentions.users.array();
             if(users.length < 2) {
@@ -372,6 +375,8 @@ module.exports = {
             curGame.shuffle();
             curGame.dealInitial();
         }
+
+        // always update based on if curGame is finished
         if(curGame?.finished) {
             curGame.showPoints();
             prevGame.copyState(curGame);
