@@ -31,6 +31,7 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] Add $customreact \<reactionName>
 , where a user can create a custom reaction for the bot by reacting to message: "React to this message with your custom reactions!". Afterwards, bot will react with the same reactions in response to \<reactionName>
  - [ ] Add restricted $removereact \<reactionName> to remove a custom reaction
+ - [ ] $magic8 - gives a magic 8 ball response
 
 ***General***
  - [x] logging in as bot admin
