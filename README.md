@@ -52,7 +52,7 @@ Please make sure to run `npm install` to install the required packages before te
     - [ ] add comments
     - [ ] organize for readability
     - [ ] 
- - [ ] Add bot as dealer
- - [ ] Print cards with suit emoji instead of letters
+ - [x] Add bot as dealer
+ - [x] Print cards with suit emoji instead of letters
  - [ ] Track statistics (win/loss, points earned, games played) for each player (in each server)
  - [ ] Remember points across multiple games (though maybe not across bot restarts)

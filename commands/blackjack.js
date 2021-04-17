@@ -1,11 +1,14 @@
 
+const Discord = require('discord.js');
+
 class CardPlayer {
-	constructor(name, user) {
+	constructor(name, user, isDealer=false) {
 		this.name = name;
 		this.hand = [];
         this.user = user;
         this.points = 100;
         this.bet = 0;
+        this.isDealer = isDealer;
 	}
 
 	receiveCard(card) {
@@ -89,6 +92,7 @@ class Blackjack {
         this.bust = [];
         this.finished = false;
         this.numBets = 0;
+        this.players.push(new CardPlayer("Dealer", undefined, true));
 	}
 
 	shuffle() {
@@ -121,10 +125,23 @@ class Blackjack {
 		}
 	}
 
-	showCards() {
+	showCards(showAll = false) {
 		for(let p of this.players) {
             let res = p.hand.length > 0 ? p.hand.map(prettyCard).join(", ") : "no cards";
-			this.channel.send(p.name + ": " + res +" - " + p.sumHand().toString());
+            if(p.isDealer && !showAll) {
+                let cards = [];
+                for(let i in p.hand) {
+                    if(i == 1) {
+                        cards.push("🃏");
+                    } else {
+                        cards.push(prettyCard(p.hand[i]));
+                    }
+                }
+                res = cards.join(", ");
+                this.channel.send(p.name + ": " + res +" - ??")
+            } else {
+                this.channel.send(p.name + ": " + res +" - " + p.sumHand().toString());
+            }
 		}
 	}
 
@@ -140,8 +157,10 @@ class Blackjack {
         const naturals = this.players.filter(p => p.sumHand() == 21);
         if(naturals.length > 0) {
             naturals.forEach(p => this.channel.send(p.name + " has a blackjack!"));
-            this.handlePoints(naturals);
+            this.handlePoints([], [], naturals.filter(p => !p.isDealer));
             this.finished = true;
+        } else {
+            this.sayTurn();
         }
     }
 
@@ -151,7 +170,7 @@ class Blackjack {
     }
 
     sayTurn() {
-        if(this.numBets == this.players.length) {
+        if(!this.isBetting()) { // -1 because of dealer
             this.channel.send("It's " + this.curPlayer().name + "'s turn to hit/stay");
         } else {
             this.channel.send("It's " + this.curPlayer().name + "'s turn to bet");
@@ -173,8 +192,13 @@ class Blackjack {
 
     nextPlayer() {
         this.turn++;
-        if(!this.checkWinners()) {
+        if(!this.tryDealer() && !this.checkWinners()) {
             this.sayTurn();
+            if(this.curPlayer().sumHand() == 21 && this.curPlayer.hand.length == 2) {
+                // natural blackjack
+                this.channel.send(this.curPlayer().name + " had a natural blackjack, no need to hit/stay");
+                this.nextPlayer();
+            }
         }
     }
 
@@ -182,35 +206,42 @@ class Blackjack {
         this.nextPlayer();
     }
 
-    handlePoints(winners) {
-        if(winners.length < 1) {
-            console.error("This should not happen ??");
-            return;
+    handlePoints(winners, ties, blackjacks) {
+        if(blackjacks.length == 1) {
+            const winner = blackjacks[0];
+            this.channel.send(winner.name + " who bet: " + winner.bet.toString() + " and had a blackjack");
+            console.log("Only one blackjack"); 
+        } else if (blackjacks.length > 1) {
+            const winnersString = blackjacks.reduce((acc, e) => acc + e.name + ": bet- " + e.bet.toString(), "");
+            this.channel.send("The natural blackjacks are: " + winnersString);
+            console.log("Multiple blackjacks");
         }
         // State who won and their bets
         if(winners.length == 1) {
             const winner = winners[0];
             this.channel.send("The winner is: " + winner.name + " who bet: " + winner.bet.toString());
             console.log("Only one winner");
-        } else {
+        } else if (winners.length > 1) {
             const winnersString = winners.reduce((acc, e) => acc + e.name + ": bet- " + e.bet.toString(), "");
-            this.channel.send("We have a tie! Winners: " + winnersString);
-            console.log("Tied winners");
+            this.channel.send("The winners are: " + winnersString);
+            console.log("Multiple winners");
         }
-        // Calculate and say the winnings for each winner
-        const numNonwinners = this.players.reduce((acc, p) => winners.includes(p) ? acc : acc + 1, 0);
-        const winningsString = winners.reduce((acc, w) => acc + w.name + " won: " + (w.bet * (numNonwinners + 1)).toString() + " ", "");
-        this.channel.send(winningsString);
+        // State who tied and their bets
+        if(ties.length > 0) {
+            const tiesString = ties.reduce((acc, e) => acc + e.name + ": bet- " + e.bet.toString(), "");
+            this.channel.send("People who tied dealer: " + tiesString + ", keep their bets");
+        }
+
+        // Calculate the winnings for each winner
         this.players.forEach(p => p.points -= p.bet);
-        winners.forEach(w => w.points += w.bet * (numNonwinners + 1));
+        blackjacks.forEach(b => b.points += Math.ceil(b.bet * 2.5));
+        winners.forEach(w => w.points += w.bet * 2);
+        ties.forEach(t => t.points += t.bet);
         // Remove players with 0 points left
         for(let i in this.players) {
             if(this.players[i].points == 0) {
                 this.channel.send("Players: " + this.players[i].name + " has 0 points. Bye!");
-                this.players.splice(i, 1); 
-                if(this.players.length == 1) {
-                    this.channel.send("Congratulations " + this.players[0].name + "! You won the whole game!");
-                }
+                this.players.splice(i, 1);
             }
         }
     }
@@ -220,22 +251,51 @@ class Blackjack {
         if(this.curPlayer() === undefined || this.bust.length >= this.players.length - 1) {
             // everyone finished or only one player left unbusted
             let winners = [];
-            let maxscore = 0;
+            let ties = [];
+            const dealer = this.players[this.players.length - 1];
             for(let p of this.players) {
                 if(this.bust.some(bp => bp.name == p.name)) {
                     continue; // this player is busted
                 }
-                let handsum = p.sumHand();
-                if(handsum > maxscore) {
-                    maxscore = handsum;
-                    winners = [p];
-                } else if(handsum == maxscore) {
+                if(p.isDealer) {
+                    continue; // this is the dealer
+                }
+                const diff = p.sumHand() - dealer.sumHand();
+                if(diff > 0) {
                     winners.push(p);
+                } else if(diff == 0) {
+                    ties.push(p);
                 }
             }
-            this.handlePoints(winners)
+            this.handlePoints(winners, ties, [])
             this.finished = true;
             console.log("Game finished");
+            return true;
+        }
+        return false;
+    }
+
+    tryDealer() {
+        if(this.curPlayer()?.isDealer) {
+            // show curPlayer/Dealer's hand
+            let res = this.curPlayer().hand.length > 0 ? this.curPlayer().hand.join(" ") : "no cards";
+		    this.channel.send(this.curPlayer().name + ": " + res + " - " + this.curPlayer().sumHand());
+
+            if(this.bust.length < this.players.length - 1) {
+                const dealer = this.curPlayer();
+                while(dealer.sumHand() < 17) {
+                    this.channel.send("Dealer must hit");
+                    this.hit();
+                }
+                this.channel.send(this.curPlayer().name + " must stay");
+                this.stay();
+            } else {
+                console.log(this.bust.length);
+                console.log(this.players.length);
+                this.channel.send("Everyone else busted, dealer wins");
+                this.channel.send(this.curPlayer().name + " stays");
+                this.stay();
+            }
             return true;
         }
         return false;
@@ -266,7 +326,7 @@ class Blackjack {
     }
 
     isBetting() {
-        return this.numBets < this.players.length;
+        return this.numBets < this.players.length - 1;
     }
 
     bet(amount) {
@@ -278,21 +338,22 @@ class Blackjack {
         this.channel.send(this.curPlayer().name + " bet: " + amount.toString());
         this.turn++; 
         this.numBets++;
-        if(this.numBets == this.players.length) {
+        if(!this.isBetting()) { // - 1 because dealer exists
             this.turn = 0;
             this.dealSecond();
+        } else {
+            this.sayTurn();
         }
-        this.sayTurn();
         return true;
     }
 
     showPoints() {
-        this.players.forEach(p => this.channel.send(`${p.name}: ${p.points}`));
+        this.players.forEach(p => {if(!p.isDealer){ this.channel.send(`${p.name}: ${p.points}`) }});
     }
 }
 
 let prevGame = new Blackjack(undefined, []);
-let curGame = new Blackjack(undefined, []);
+let curGame = undefined;
 
 const needsRunningGame = ["hit", "stay", "bet", "deck", "cards", "points", "turn"];
 const needsActivePlayer = ["hit", "stay", "bet"];
@@ -300,9 +361,39 @@ const needsActivePlayer = ["hit", "stay", "bet"];
 module.exports = {
     name: "blackjack",
     usage: "blackjack (startingPoints) @<player1> @<player2> ... | hit | stay | restart | next",
-    description: "starts blackjack game with mentioned players",
+    description: "creates a game with mentioned players, or does blackjack commands. Use $blackjack help for more info",
     action: (msg, cmdArgs) => {
         let arg = cmdArgs[0].toLowerCase();
+        if(arg == "rules") {
+            let rulesEmbed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle("Blackjack Rules")
+                .addField("Goal", "Get a larger hand value than the dealer to win your bet")
+                .addField("Hand Value", "Sum the numbers on your cards, J Q K count as 10, A counts as 1 or 11")
+                .addField("Game play", "You will receive one card, a round of betting will take place, then a second card" +
+                    ", afterwards you can choose to 'hit' to gain another card, or 'stay' to pass the turn to the next player")
+                .addField("Dealer", "The bot/dealer must hit until they have 17 or more, upon which they must stay")
+                .addField("Winnings", "You win your bet if you beat the dealer, you lose your bet if the delaer beat you, and you keep your bet if you tied")
+                .addField("Blackjacks", "When you get 21 on first two cards. You get 1.5 times your bet rounded up and don't hit/stay");
+
+            msg.channel.send(rulesEmbed);
+        } else if (arg == "help") {
+            let helpEmbed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle("Blackjack Comamnds")
+                .addField("help", "Send this help message")
+                .addField("rules", "Send")
+                .addField("hit", "hit if you are the current player")
+                .addField("stay", "stay if you are the current player")
+                .addField("bet <amount>", "bet <amount> if you are current player, use an integer <amount>")
+                .addField("restart", "restart the current game")
+                .addField("next", "continue current game with a new round")
+                .addField("cards", "shows cards")
+                .addField("points", "shows current points")
+                .addField("turn", "shows current player");
+                
+            msg.channel.send(helpEmbed);
+        }
         if(curGame === undefined && needsRunningGame.includes(arg)) {
             msg.channel.send("No current game running");
             return;
@@ -365,8 +456,8 @@ module.exports = {
             curGame?.sayTurn();
         } else {
             const users = msg.mentions.users.array();
-            if(users.length < 2) {
-                msg.channel.send("Needs at least 2 players to play blackjack");
+            if(users.length < 1) {
+                msg.channel.send("Needs at least 1 players to play blackjack");
                 return;
             }
             msg.channel.send("Starting game!");
