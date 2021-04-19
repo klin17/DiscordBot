@@ -360,10 +360,19 @@ const needsActivePlayer = ["hit", "stay", "bet"];
 
 module.exports = {
     name: "blackjack",
-    usage: "blackjack (startingPoints) @<player1> @<player2> ... | hit | stay | restart | next",
+    usage: "blackjack (startingPoints) @<player1> @<player2> ...",
     description: "creates a game with mentioned players, or does blackjack commands. Use $blackjack help for more info",
     action: (msg, cmdArgs) => {
         let arg = cmdArgs[0].toLowerCase();
+        
+        if(curGame === undefined && needsRunningGame.includes(arg)) {
+            msg.channel.send("No current game running");
+            return;
+        }
+        if(needsActivePlayer.includes(arg) && msg.author.username !== curGame?.curPlayer().name) {
+            msg.channel.send("Current active player is: " + curGame?.curPlayer().name);
+            return;
+        }
         if(arg == "rules") {
             let rulesEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
@@ -393,17 +402,7 @@ module.exports = {
                 .addField("turn", "shows current player");
                 
             msg.channel.send(helpEmbed);
-        }
-        if(curGame === undefined && needsRunningGame.includes(arg)) {
-            msg.channel.send("No current game running");
-            return;
-        }
-        if(needsActivePlayer.includes(arg) && msg.author.username !== curGame?.curPlayer().name) {
-            msg.channel.send("Current active player is: " + curGame?.curPlayer().name);
-            return;
-        }
-        
-        if(arg == "hit") {
+        } else if(arg == "hit") {
             if(curGame?.isBetting()) {
                 msg.channel.send("All players must bet before hitting can start");
             } else {
