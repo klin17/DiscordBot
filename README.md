@@ -22,6 +22,7 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] $ban and $unban
  - [ ] $kick
  - [ ] Add (time) parameter for $revoke
+ - [x] Add (time) parameter for $mute
  - [x] DM permadmins when $login succcessful
  - [x] Add embed for $help
  - [ ] $keywords, to list keywords

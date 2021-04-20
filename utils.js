@@ -55,3 +55,29 @@ exports.getCommands = () => {
     }
     return commands;
 }
+
+exports.getMilliseconds = (amount, unit) => {
+    let num = parseFloat(amount);
+    if(isNaN(num)) {
+        return undefined;
+    }
+    switch(unit) {
+        case "ms":
+        case "millisecond":
+        case "milliseconds":
+            return num;
+        case "s":
+        case "seconds":
+        case "sec":
+        case "second":
+            return num * 1000;
+        case "hr":
+        case "hrs":
+        case "hour":
+        case "hours":
+            return num * 1000 * 60 * 60;
+        default:
+            // minutes
+            return num * 1000 * 60;
+    }
+}

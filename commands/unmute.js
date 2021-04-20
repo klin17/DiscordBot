@@ -7,10 +7,14 @@ module.exports = {
         const user = msg.mentions.members.first();
         let muterole = msg.guild.roles.cache.find(x => x.name === "Muted")
         if(muterole) {
-            user.roles.remove(muterole)
-            msg.channel.send(`Unmuted <@${user.id}>`)
+            if(msg.guild.member(mutee).roles.cache.has(muterole.id)) {
+                user.roles.remove(muterole);
+                msg.channel.send(`Unmuted <@${mutee.id}>`);
+            } else {
+                msg.channel.send("Cannot unmute someone who is not muted");
+            }
         } else {
-            msg.channel.send("User is not muted");
+            msg.channel.send("The 'Muted' role does not exist");
         }
     },
 }

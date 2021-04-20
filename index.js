@@ -1,3 +1,12 @@
+// Get the process to know when we stop running
+const process = require('process');
+
+process.on("exit", () => console.log("process will exit now"));
+process.on('SIGINT', (signal) => {
+    console.log("sigint received");
+    process.exit();
+});
+
 //imports
 require('dotenv').config();
 const Discord = require('discord.js');
@@ -41,6 +50,10 @@ client.on('message', msg => {
     }
     parseCommand(msg);
     parseKeyword(msg);
+});
+
+client.on("disconnect", () => {
+    console.log(`websocket disconnect`);
 });
 
 // login to discord (should happen after setup of event handlers)
