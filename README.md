@@ -32,7 +32,7 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] Add $customreact \<reactionName>
 , where a user can create a custom reaction for the bot by reacting to message: "React to this message with your custom reactions!". Afterwards, bot will react with the same reactions in response to \<reactionName>
  - [ ] Add restricted $removereact \<reactionName> to remove a custom reaction
- - [ ] $magic8 - gives a magic 8 ball response
+ - [x] $magic8 - gives a magic 8 ball response
 
 ***General***
  - [x] logging in as bot admin
@@ -47,6 +47,8 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] Pull out enabled/disabled handler into separate file (maybe: commandStatus.js ?)
  - [ ] Add a database for persistent storage ???? (may be too much)
  - [ ] Implement points system for each server
+ - [ ] Add description comments for functions
+ - [x] Pokehelp functionality
 
  ***Blackjack***
  - [ ] Clean the code!

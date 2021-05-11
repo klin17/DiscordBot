@@ -287,7 +287,7 @@ class Blackjack {
                     this.channel.send("Dealer must hit");
                     this.hit();
                 }
-                this.channel.send(this.curPlayer().name + " must stay");
+                this.channel.send(dealer.name + " must stay");
                 this.stay();
             } else {
                 console.log(this.bust.length);

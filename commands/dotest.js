@@ -1,10 +1,11 @@
+
+
 module.exports = {
     name: "dotest",
     usage: "dotest",
-    description: "a test command to do things I need for testing",
+    description: "runs a functionality that is being tested",
     restricted: true,
     action: (msg, cmdArgs) => {
-        // get all members of guild
-        console.log("no test currently");
+        msg.channel.send("No test currently");
     },
 }

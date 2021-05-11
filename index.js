@@ -11,6 +11,8 @@ process.on('SIGINT', (signal) => {
 require('dotenv').config();
 const Discord = require('discord.js');
 const { parseCommand, parseKeyword } = require('./botActions');
+const { checkedPokeHelp } = require('./pokeutils');
+
 // Create instance of discord client
 const client = new Discord.Client();
 
@@ -41,7 +43,13 @@ function filterBannedStrings(msg) {
 
 // fires when any message is created
 client.on('message', msg => {
-    if(msg.author.bot) { // do not respond to bots
+    if(msg.author.bot) { // message came from a bot
+        if(msg.author.username == "Pokémize") {
+            if(msg.embeds[0]?.title == "A wild Pokémon has appeared!") {
+                const pokeimageurl = msg.embeds[0].thumbnail.url;
+                checkedPokeHelp(pokeimageurl, msg.channel);
+            }
+        }
         return;
     }
     //banned msgs are not further processed
