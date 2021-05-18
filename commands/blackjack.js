@@ -382,7 +382,7 @@ module.exports = {
                 .addField("Game play", "You will receive one card, a round of betting will take place, then a second card" +
                     ", afterwards you can choose to 'hit' to gain another card, or 'stay' to pass the turn to the next player")
                 .addField("Dealer", "The bot/dealer must hit until they have 17 or more, upon which they must stay")
-                .addField("Winnings", "You win your bet if you beat the dealer, you lose your bet if the delaer beat you, and you keep your bet if you tied")
+                .addField("Winnings", "You win your bet if you beat the dealer, you lose your bet if the dealer beat you, and you keep your bet if you tied")
                 .addField("Blackjacks", "When you get 21 on first two cards. You get 1.5 times your bet rounded up and don't hit/stay");
 
             msg.channel.send(rulesEmbed);
