@@ -10,7 +10,7 @@ const PROMPTCHAR = "$";
 exports.PROMPTCHAR = PROMPTCHAR; //must be before call getCommands() to avoid circular dependency
 
 exports.defaultBadArgResponse = (msg, commandName) => {
-    msg.channel.send("Use " + PROMPTCHAR + "help " + commandName + ", for more info");
+    msg.channel.send("Use `" + PROMPTCHAR + "help " + commandName + "` for more info");
 }
 
 // command object format:
@@ -38,15 +38,15 @@ exports.parseCommand = (msg) => {
             if(cmdObj.restricted) {
                 //check if author is bot admin
                 if(!isAdmin(msg.author.id)) {
-                    console.log("non admin attempt to run command: " + cmdWord);
-                    msg.channel.send("Command: " + cmdWord + "  is restricted");
+                    console.log("non admin attempt to run command: `" + cmdWord + "`");
+                    msg.channel.send("Command: `" + cmdWord + "`  is restricted");
                     return;
                 }
             }
             // handle disabled commands
             if(disabled.disabled.includes(cmdWord)) {
-                console.log("command: " + cmdWord + "is disabled");
-                msg.channel.send("Command: " + cmdWord + " is disabled");
+                console.log("command: `" + cmdWord + "` is disabled");
+                msg.channel.send("Command: `" + cmdWord + "` is disabled");
                 return;
             } else {
                 console.log("disabled array: ");
