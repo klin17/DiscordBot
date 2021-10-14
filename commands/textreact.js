@@ -40,7 +40,7 @@ module.exports = {
                     let position = charcode - 97;
                     prev_mess.react(LETTER_EMOJIS[position])
                 }
-                command_mess.delete(); // remove this message
+                // command_mess.delete(); // remove this message
             }
         })
     }
