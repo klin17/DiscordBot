@@ -17,6 +17,9 @@ Please make sure to run `npm install` to install the required packages before te
 
 [comment]: # (the format - [ ] denotes a tickbox for markdown in github. This may not show up properly in the VScode markdown preview)
 
+***Keywords***
+ - [ ] respond to "I'm xxxxxxx" with "Hi xxxxx"
+
 ***Commands***
  - [x] polling
  - [ ] $ban and $unban

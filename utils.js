@@ -56,6 +56,20 @@ exports.getCommands = () => {
     return commands;
 }
 
+exports.makeRegex = ([s, flags]) => {
+    return new RegExp(s, flags);
+}
+
+exports.getKeywords = () => {
+    const keywords = {};
+    const keywordFiles = fs.readdirSync('./keywords').filter(f => f.endsWith('.js'));
+    for(const f of keywordFiles) {
+        const keywordObj = require(`./keywords/${f}`);
+        keywords[keywordObj.name] = keywordObj;
+    }
+    return keywords;
+}
+
 exports.getMilliseconds = (amount, unit) => {
     let num = parseFloat(amount);
     if(isNaN(num)) {
