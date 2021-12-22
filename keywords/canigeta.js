@@ -50,8 +50,8 @@ const canigetaRegex = ["c+a+n+ +i+ +g+e+t+ +a+n*", "gi"]
 module.exports = {
     name: "canigeta",
     regexStrings: canigetaRegex,
-    // description: "@s someone random in the server",
-    // restricted: false,
+    description: "Responds with a random meme for 'owa owa', 'shaq', 'bananya', 'gibby'",
+    restricted: false,
     action: (msg) => {
         let regex = makeRegex(canigetaRegex);
         regex.test(msg.content);

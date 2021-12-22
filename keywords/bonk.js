@@ -4,8 +4,8 @@ const { pickRandom } = require("../utils");
 module.exports = {
     name: "bonk",
     regexStrings: ["b+o+n+k+!*", "gi"],
-    // description: "@s someone random in the server",
-    // restricted: false,
+    description: "Responds with a bonk meme",
+    restricted: false,
     action: (msg) => {
         // send a bonk image (gif of a cat)
         const bonks = [

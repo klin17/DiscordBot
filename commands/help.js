@@ -1,22 +1,23 @@
 const Discord = require('discord.js');
 const { PROMPTCHAR } = require("../botActions");
-const { getCommands } = require("../utils");
+const { getCommands, getKeywords } = require("../utils");
 const disabled = require('../disabled.json');
 
 module.exports = {
     name: "help",
-    usage: "help (command name)",
-    description: "sends description for (command), or lists commands",
+    usage: "help (command/keyword name)",
+    description: "sends description for (command/keyword), or lists commands and keywords",
     action: (msg, cmdArgs) => {
+        const commands = getCommands();
+        // check if first arg exists
         if(cmdArgs.length > 0) {
-            // check if first arg is a command
-            const commands = getCommands();
-            let command = commands[cmdArgs[0]];
+            // check for command
+            const command = commands[cmdArgs[0]];
             if(command) {
                 // get the status of the command
                 let status = command.restricted ? "Restricted" : "Open Access";
                 if(disabled.disabled.includes(command.name)) {
-                    status += " - Disabled"
+                    status += " - **Disabled**"
                 }
                 // Send the usage and description for the found command
                 let commandsEmbed = new Discord.MessageEmbed()
@@ -27,12 +28,29 @@ module.exports = {
                     .addField("Status", status);
                     
                 msg.channel.send(commandsEmbed);
-            } else {
-                msg.channel.send("No match for command: " + cmdArgs[0]);
+                return
             }
+
+            // check for keyword
+            const keywords = getKeywords();
+            const keyword = keywords[cmdArgs[0]];
+            if(keyword) {
+                // Send the usage and description for the found keyword
+                let commandsEmbed = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+                    .setTitle(keyword.name)
+                    .addField("Description", keyword.description)
+                    .addField("Status", disabled.disabled.includes(keyword.name) ? "Disabled" : "Enabled");
+                    
+                msg.channel.send(commandsEmbed);
+                return
+            }
+
+            // fallback if no command or keyword matching found
+            msg.channel.send("No command or keyword with name: " + cmdArgs[0]);
         } else {
             //call $commands to list out all commands when no args
-            commands["commands"]["action"](msg, cmdArgs);
+            commands["actions"]["action"](msg, cmdArgs);
         }
     },
 }

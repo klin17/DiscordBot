@@ -4,6 +4,19 @@ const { getCommands, getKeywords, makeRegex } = require("./utils");
 const { isAdmin } = require("./privileges");
 const disabled = require("./disabled.json");
 
+// Action Helpers
+
+function checkDisabled(name, type) {
+    if(disabled.disabled.includes(name)) {
+        console.log(type + ": `" + name + "` is disabled");
+        return true;
+    } else {
+        console.log(type + " - disabled array: ");
+        console.log(disabled.disabled);
+        return false;
+    }
+}
+
 // COMMAND HANDLING: --------------
 
 const PROMPTCHAR = "$";
@@ -44,14 +57,18 @@ exports.parseCommand = (msg) => {
                 }
             }
             // handle disabled commands
-            if(disabled.disabled.includes(cmdWord)) {
-                console.log("command: `" + cmdWord + "` is disabled");
-                msg.channel.send("Command: `" + cmdWord + "` is disabled");
+            if(checkDisabled(cmdWord, "Command")) {
+                msg.channel.send(type + ": `" + cmdWord + "` is disabled");
                 return;
-            } else {
-                console.log("disabled array: ");
-                console.log(disabled.disabled);
             }
+            // if(disabled.disabled.includes(cmdWord)) {
+            //     console.log("command: `" + cmdWord + "` is disabled");
+            //     msg.channel.send("Command: `" + cmdWord + "` is disabled");
+            //     return;
+            // } else {
+            //     console.log("disabled array: ");
+            //     console.log(disabled.disabled);
+            // }
             // call the command action
             console.log("calling " + cmdWord + " with args: ");
             console.log(args)
@@ -83,6 +100,11 @@ exports.parseKeyword = (msg) => {
     for(let key in keywords) {
         if(makeRegex(keywords[key].regexStrings).test(msg.content)) {
             console.log("found keyphrase " + key);
+
+            // handle disabled keywords
+            if(checkDisabled(key, "Keyword")) {
+                return;
+            }
             keywords[key].action(msg);
         }
     }
