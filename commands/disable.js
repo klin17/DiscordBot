@@ -21,8 +21,8 @@ function disable(toDisable, isCommand, msg) {
 
 module.exports = {
     name: "disable",
-    usage: "disable <command>",
-    description: "prevents <command> from working",
+    usage: "disable <action name>",
+    description: "prevents <action name> from working",
     restricted: true,
     action: (msg, cmdArgs) => {
         let toDisable = cmdArgs[0];

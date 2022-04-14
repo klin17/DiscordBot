@@ -29,7 +29,7 @@ module.exports = {
         let commandsEmbed = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Command Usages')
-            .setDescription(usageHelp + "\nUse `" + PROMPTCHAR + "$help (commandName)` for info on a specific command");
+            .setDescription(usageHelp + "\nUse `" + PROMPTCHAR + "help (commandName)` for info on a specific command");
         if(cmdArgs[0] == "all") {
             commandsEmbed.addField("Open Access", unrestrictedDescriptions.join("\n"));
             commandsEmbed.addField("Restricted", restrictedDescriptions.join("\n"));

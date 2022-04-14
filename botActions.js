@@ -61,15 +61,7 @@ exports.parseCommand = (msg) => {
                 msg.channel.send(type + ": `" + cmdWord + "` is disabled");
                 return;
             }
-            // if(disabled.disabled.includes(cmdWord)) {
-            //     console.log("command: `" + cmdWord + "` is disabled");
-            //     msg.channel.send("Command: `" + cmdWord + "` is disabled");
-            //     return;
-            // } else {
-            //     console.log("disabled array: ");
-            //     console.log(disabled.disabled);
-            // }
-            // call the command action
+            
             console.log("calling " + cmdWord + " with args: ");
             console.log(args)
             cmdObj.action(msg, args);
