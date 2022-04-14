@@ -40,7 +40,7 @@ Please make sure to run `npm install` to install the required packages before te
 ***General***
  - [x] logging in as bot admin
  - [x] Be able to disable commands
- - [ ] Be able to disable keywords
+ - [x] Be able to disable keywords
  - [x] Move commands into separate files
  - [ ] ~~batch commands~~ (conflicts with $echo msgWithComma)
  - [ ] Extend reaction functionality
@@ -52,6 +52,12 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] Implement points system for each server
  - [ ] Add description comments for functions
  - [x] Pokehelp functionality
+
+ ***Slash Commands***
+  - [ ] Port all simple response commands
+  - [ ] Port management commands
+  - [ ] Port interactive commands
+  - [ ] Port pokehelp
 
  ***Blackjack***
  - [ ] Clean the code!

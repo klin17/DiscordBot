@@ -12,9 +12,24 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const { parseCommand, parseKeyword } = require('./botActions');
 const { checkedPokeHelp } = require('./pokeutils');
+const { Client, Collection, Intents } = require('discord.js');
+const fs = require('node:fs');
 
 // Create instance of discord client
-const client = new Discord.Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+// const client = new Discord.Client();
+
+// Retrieve slash commands
+const commandsDir = "./slashCommands";
+client.commands = new Collection();
+const commandFiles = fs.readdirSync(commandsDir).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`${commandsDir}/${file}`);
+	// Set a new item in the Collection
+	// With the key as the command name and the value as the exported module
+	client.commands.set(command.data.name, command);
+}
 
 // fires when client first connects
 client.on('ready', () => {
@@ -62,6 +77,20 @@ client.on('message', msg => {
 
 client.on("disconnect", () => {
     console.log(`websocket disconnect`);
+});
+
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+
+    const command = client.commands.get(interaction.commandName);
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
 });
 
 // login to discord (should happen after setup of event handlers)
