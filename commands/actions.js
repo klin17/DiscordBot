@@ -60,6 +60,6 @@ module.exports = {
             // actionsEmbed.setDescription(usageHelp + "\n\n" + unrestrictedDescriptions.join("\n"));
         }
 
-        msg.channel.send(actionsEmbed);
+        msg.channel.send({ embeds: [actionsEmbed] });
     }
 }

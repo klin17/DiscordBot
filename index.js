@@ -9,14 +9,23 @@ process.on('SIGINT', (signal) => {
 
 //imports
 require('dotenv').config();
-const Discord = require('discord.js');
+// const Discord = require('discord.js');
 const { parseCommand, parseKeyword } = require('./botActions');
 const { checkedPokeHelp } = require('./pokeutils');
 const { Client, Collection, Intents } = require('discord.js');
 const fs = require('node:fs');
 
+// Declare intents
+const myIntents = new Intents();
+myIntents.add(Intents.FLAGS.GUILDS);
+myIntents.add(Intents.FLAGS.DIRECT_MESSAGES);
+myIntents.add(Intents.FLAGS.GUILD_MEMBERS);
+myIntents.add(Intents.FLAGS.GUILD_BANS);
+myIntents.add(Intents.FLAGS.DIRECT_MESSAGE_REACTIONS);
+myIntents.add(Intents.FLAGS.GUILD_MESSAGES);
+
 // Create instance of discord client
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: myIntents });
 // const client = new Discord.Client();
 
 // Retrieve slash commands
@@ -57,7 +66,7 @@ function filterBannedStrings(msg) {
 }
 
 // fires when any message is created
-client.on('message', msg => {
+client.on('messageCreate', msg => {
     if(msg.author.bot) { // message came from a bot
         if(msg.author.username == "Pokémize") {
             if(msg.embeds[0]?.title == "A wild Pokémon has appeared!") {

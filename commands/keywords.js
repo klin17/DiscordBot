@@ -34,6 +34,6 @@ module.exports = {
             keywordsEmbed.setDescription(helpMess + "\n" + enabledKeywords.join("\n"));
         }
 
-        msg.channel.send(keywordsEmbed);
+        msg.channel.send({ embeds: [keywordsEmbed] });
     }
 }

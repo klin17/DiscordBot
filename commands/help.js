@@ -27,7 +27,7 @@ module.exports = {
                     .addField("Description", command.description)
                     .addField("Status", status);
                     
-                msg.channel.send(commandsEmbed);
+                msg.channel.send({ embeds: [commandsEmbed] });
                 return
             }
 
@@ -42,7 +42,7 @@ module.exports = {
                     .addField("Description", keyword.description)
                     .addField("Status", disabled.disabled.includes(keyword.name) ? "Disabled" : "Enabled");
                     
-                msg.channel.send(commandsEmbed);
+                msg.channel.send({ embeds: [commandsEmbed] });
                 return
             }
 

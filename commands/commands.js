@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { PROMPTCHAR } = require('../botActions.js');
 const { getCommands } = require("../utils.js");
 const disabled = require('../disabled.json');
@@ -8,6 +8,7 @@ module.exports = {
     usage: "commands (all)",
     description: "lists usages for unrestricted or (all) commands",
     action: (msg, cmdArgs) => {
+        console.log("Running $commands...");
         let usageHelp = "Parenthesis denotes optional arguments, angle brackets denote required arguments";
 
         // Generate list of descriptions for all commands, placing into arrays by status
@@ -26,7 +27,7 @@ module.exports = {
             }
         }
         // Create the embed
-        let commandsEmbed = new Discord.MessageEmbed()
+        let commandsEmbed = new MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Command Usages')
             .setDescription(usageHelp + "\nUse `" + PROMPTCHAR + "help (commandName)` for info on a specific command");
@@ -39,6 +40,6 @@ module.exports = {
             commandsEmbed.setDescription(usageHelp + "\n\n" + unrestrictedDescriptions.join("\n"));
         }
 
-        msg.channel.send(commandsEmbed);
+        msg.channel.send({ embeds: [commandsEmbed] });
     }
 }
