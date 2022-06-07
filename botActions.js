@@ -6,6 +6,12 @@ const disabled = require("./disabled.json");
 
 // Action Helpers
 
+/**
+ * 
+ * @param {String} name The name of the action
+ * @param {String} type The type of action ("Command" or "Keyword")
+ * @returns {Boolean} Whether the action is disabled or not
+ */
 function checkDisabled(name, type) {
     if(disabled.disabled.includes(name)) {
         console.log(type + ": `" + name + "` is disabled");
@@ -22,6 +28,12 @@ function checkDisabled(name, type) {
 const PROMPTCHAR = "$";
 exports.PROMPTCHAR = PROMPTCHAR; //must be before call getCommands() to avoid circular dependency
 
+/**
+ * Sends a default message in response to bad input for the given command name
+ * 
+ * @param {Discord.Message<boolean>} msg The message object
+ * @param {String} commandName The name of the command
+ */
 exports.defaultBadArgResponse = (msg, commandName) => {
     msg.channel.send("Use `" + PROMPTCHAR + "help " + commandName + "` for more info");
 }
@@ -37,6 +49,11 @@ exports.defaultBadArgResponse = (msg, commandName) => {
 */
 const commands = getCommands();
 
+/**
+ * Parses a message for commands
+ * 
+ * @param {Discord.Message<boolean>} msg The message to parse
+ */
 exports.parseCommand = (msg) => {
     if(!msg.content) {
         return;
@@ -85,6 +102,11 @@ exports.parseCommand = (msg) => {
 */
 const keywords = getKeywords()
 
+/**
+ * Parses a message for a keyword
+ * 
+ * @param {Discord.Message<boolean>} msg The message to parse for a keyword
+ */
 exports.parseKeyword = (msg) => {
     if(!msg.content) {
         return;
