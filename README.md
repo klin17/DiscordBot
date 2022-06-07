@@ -59,7 +59,7 @@ Please make sure to run `npm install` to install the required packages before te
  - [ ] Pull out enabled/disabled handler into separate file (maybe: commandStatus.js ?)
  - [ ] Add a database for persistent storage ???? (may be too much)
  - [ ] Implement points system for each server
- - [ ] Add description comments for functions
+ - [ ] Add JS Doc strings to everything
  - [x] Pokehelp functionality
 
  ***Slash Commands***
