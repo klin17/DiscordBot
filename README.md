@@ -9,6 +9,14 @@ This bot uses Node.js and is deployed on Heroku.
 https://discord.com/oauth2/authorize?client_id=821816503791124523&scope=bot&permissions=2147483647  
 _You can only add bots to servers you have MANAGE_GUILD permissions for_
 
+## Running the Bot
+You will need environment variables set:
+- DISCORD_TOKEN : The bot token
+- CLIENT_ID : The bot client ID (For registering slash commands)
+- GUILD_ID : The guild you want to register the bot slash commands for
+- ADMIN_PASS : A password for bot-admin role (your choice)
+
+
 ## Bot Editing
 Please make sure to run `npm install` to install the required packages before testing. Let me know if you need to test your code so I can turn off the cloud bot.
 
@@ -38,6 +46,7 @@ Please make sure to run `npm install` to install the required packages before te
  - [x] $magic8 - gives a magic 8 ball response
 
 ***General***
+ - [ ] fix reaction commands
  - [x] logging in as bot admin
  - [x] Be able to disable commands
  - [x] Be able to disable keywords
