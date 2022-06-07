@@ -31,7 +31,7 @@ module.exports = {
         }
         await msg.channel.messages.fetch({limit: 2}).then(messages => {
             if(messages.size == 2) {
-                const arr = messages.array();
+                const arr = Array.from(messages.values());
                 let prev_mess = arr[1]
                 let command_mess = arr[0]
 
