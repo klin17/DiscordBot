@@ -1,5 +1,6 @@
 //imports
 const Discord = require('discord.js'); // For types
+const { CustomCommand } = require('./commands/commandTypes')
 const fs = require('fs');
 
 /**
@@ -78,7 +79,7 @@ exports.dmUser = (userObj, content, options) => {
 
 /**
  * 
- * @returns {Object} An object of all command objects
+ * @returns { {[commandName: String]: CustomCommand } } An object of all command objects
  */
 exports.getCommands = () => {
     const commands = {};
