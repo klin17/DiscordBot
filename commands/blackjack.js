@@ -361,7 +361,7 @@ const needsRunningGame = ["hit", "stay", "bet", "deck", "cards", "points", "turn
 const needsActivePlayer = ["hit", "stay", "bet"];
 
 /**
- * @type {import('./commandTypes').CustomCommand}
+ * @type {import('../commandTypes').CustomCommand}
  */
 module.exports = {
     name: "blackjack",

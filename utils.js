@@ -1,6 +1,6 @@
 //imports
 const Discord = require('discord.js'); // For types
-const { CustomCommand } = require('./commands/commandTypes.js')
+const { CustomCommand } = require('./commandTypes.js')
 const fs = require('fs');
 
 /**
