@@ -78,6 +78,16 @@ exports.dmUser = (userObj, content, options) => {
 }
 
 /**
+ * Sends an embed in the channel which msg is in
+ * 
+ * @param {Discord.Message<boolean>} msg The message which is in the channnel to send the embed
+ * @param {Discord.MessageEmbed} embed The embed to send
+ */
+exports.sendEmbed = (msg, embed) => {
+    msg.channel.send({embeds: [embed]});
+}
+
+/**
  * 
  * @returns { {[commandName: String]: CustomCommand } } An object of all command objects
  */
