@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { PROMPTCHAR } = require('../botActions.js');
-const { getKeywords } = require("../utils.js");
+const { getKeywords, sendEmbed } = require("../utils.js");
 const disabled = require('../disabled.json');
 
 module.exports = {
@@ -34,6 +34,6 @@ module.exports = {
             keywordsEmbed.setDescription(helpMess + "\n" + enabledKeywords.join("\n"));
         }
 
-        msg.channel.send({ embeds: [keywordsEmbed] });
+        sendEmbed(msg, keywordsEmbed);
     }
 }

@@ -1,5 +1,7 @@
 
 const Discord = require('discord.js');
+const { defaultBadArgResponse } = require('../botActions');
+const { sendEmbed } = require('../utils');
 
 class CardPlayer {
 	constructor(name, user, isDealer=false) {
@@ -358,11 +360,17 @@ let curGame = undefined;
 const needsRunningGame = ["hit", "stay", "bet", "deck", "cards", "points", "turn"];
 const needsActivePlayer = ["hit", "stay", "bet"];
 
+/**
+ * @type {import('./commandTypes').CustomCommand}
+ */
 module.exports = {
     name: "blackjack",
     usage: "blackjack (startingPoints) @<player1> @<player2> ...",
     description: "creates a game with mentioned players, or does blackjack commands. Use $blackjack help for more info",
     action: (msg, cmdArgs) => {
+        if(cmdArgs.length < 1) {
+            defaultBadArgResponse(msg, "blackjack");
+        }
         let arg = cmdArgs[0].toLowerCase();
         
         if(curGame === undefined && needsRunningGame.includes(arg)) {
@@ -385,7 +393,7 @@ module.exports = {
                 .addField("Winnings", "You win your bet if you beat the dealer, you lose your bet if the dealer beat you, and you keep your bet if you tied")
                 .addField("Blackjacks", "When you get 21 on first two cards. You get 1.5 times your bet rounded up and don't hit/stay");
 
-            msg.channel.send(rulesEmbed);
+            sendEmbed(msg, rulesEmbed);
         } else if (arg == "help") {
             let helpEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
@@ -401,7 +409,7 @@ module.exports = {
                 .addField("points", "shows current points")
                 .addField("turn", "shows current player");
                 
-            msg.channel.send(helpEmbed);
+            sendEmbed(msg, helpEmbed);
         } else if(arg == "hit") {
             if(curGame?.isBetting()) {
                 msg.channel.send("All players must bet before hitting can start");

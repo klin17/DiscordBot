@@ -153,7 +153,7 @@ const sayClosest = (target, channel) => {
         const timeout = 15000; // arbitrary
         pokeHelpEmbed.setFooter(`Bot admin can react with 👍 within ${timeout / 1000} sec to save image`);
 
-        channel.send(pokeHelpEmbed).then(message => {
+        channel.send({embeds: [pokeHelpEmbed]}).then(message => {
             // check for admin approval for using best.link as new link for best.name
             const filter = (reaction, user) => reaction.emoji.name === '👍' && isAdmin(user.id, undefined);
             message.awaitReactions(filter, { time: timeout }).then(collected => {

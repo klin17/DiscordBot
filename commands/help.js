@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { PROMPTCHAR } = require("../botActions");
-const { getCommands, getKeywords } = require("../utils");
+const { getCommands, getKeywords, sendEmbed } = require("../utils");
 const disabled = require('../disabled.json');
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
                     .addField("Description", command.description)
                     .addField("Status", status);
                     
-                msg.channel.send({ embeds: [commandsEmbed] });
+                sendEmbed(msg, commandsEmbed);
                 return
             }
 
@@ -36,13 +36,13 @@ module.exports = {
             const keyword = keywords[cmdArgs[0]];
             if(keyword) {
                 // Send the usage and description for the found keyword
-                let commandsEmbed = new Discord.MessageEmbed()
+                let keywordsEmbed = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setTitle(keyword.name)
                     .addField("Description", keyword.description)
                     .addField("Status", disabled.disabled.includes(keyword.name) ? "Disabled" : "Enabled");
                     
-                msg.channel.send({ embeds: [commandsEmbed] });
+                sendEmbed(msg, keywordsEmbed);
                 return
             }
 

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const { PROMPTCHAR } = require('../botActions.js');
-const { getCommands } = require("../utils.js");
+const { getCommands, sendEmbed } = require("../utils.js");
 const disabled = require('../disabled.json');
 
 module.exports = {
@@ -40,6 +40,6 @@ module.exports = {
             commandsEmbed.setDescription(usageHelp + "\n\n" + unrestrictedDescriptions.join("\n"));
         }
 
-        msg.channel.send({ embeds: [commandsEmbed] });
+        sendEmbed(msg, commandsEmbed);
     }
 }
