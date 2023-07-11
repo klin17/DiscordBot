@@ -46,17 +46,21 @@ module.exports = {
             .setTitle('Bot Actions')
             .setDescription(usageHelp + "\nUse `" + PROMPTCHAR + "help (actionName)` for info on a specific action");
         if(cmdArgs[0] == "all") {
-            actionsEmbed.addField("Open Access Commands", unrestrictedDescriptions.join("\n"));
-            actionsEmbed.addField("Restricted Commands", restrictedDescriptions.join("\n"));
             let disabledCommandsContent = disabledDescriptions.length > 0 ? disabledDescriptions.join("\n") : "No disabled commands";
-            actionsEmbed.addField("Disabled Commands", disabledCommandsContent);
-
-            actionsEmbed.addField("Enabled Keywords", enabledKeywords.join("\n"));
             let disabledKeywordsContent = disabledKeywords.length > 0 ? disabledKeywords.join("\n") : "No disabled keywords";
-            actionsEmbed.addField("Disabled Keywords", disabledKeywordsContent);
+
+            actionsEmbed.addFields(
+                { name: "Open Access Commands", value: unrestrictedDescriptions.join("\n") },
+                { name: "Restricted Commands", value: restrictedDescriptions.join("\n") },
+                { name: "Disabled Commands", value: disabledCommandsContent },
+                { name: "Enabled Keywords", value: enabledKeywords.join("\n") },
+                { name: "Disabled Keywords", value: disabledKeywordsContent }
+            );
         } else {
-            actionsEmbed.addField("Commands", unrestrictedDescriptions.join("\n"));
-            actionsEmbed.addField("Keywords", enabledKeywords.join("\n"));
+            actionsEmbed.addFields(
+                { name: "Commands", value: unrestrictedDescriptions.join("\n") },
+                { name: "Keywords", value: enabledKeywords.join("\n") }
+            );
             // actionsEmbed.setDescription(usageHelp + "\n\n" + unrestrictedDescriptions.join("\n"));
         }
 

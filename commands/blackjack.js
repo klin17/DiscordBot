@@ -385,29 +385,33 @@ module.exports = {
             let rulesEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle("Blackjack Rules")
-                .addField("Goal", "Get a larger hand value than the dealer to win your bet")
-                .addField("Hand Value", "Sum the numbers on your cards, J Q K count as 10, A counts as 1 or 11")
-                .addField("Game play", "You will receive one card, a round of betting will take place, then a second card" +
-                    ", afterwards you can choose to 'hit' to gain another card, or 'stay' to pass the turn to the next player")
-                .addField("Dealer", "The bot/dealer must hit until they have 17 or more, upon which they must stay")
-                .addField("Winnings", "You win your bet if you beat the dealer, you lose your bet if the dealer beat you, and you keep your bet if you tied")
-                .addField("Blackjacks", "When you get 21 on first two cards. You get 1.5 times your bet rounded up and don't hit/stay");
+                .addFields(
+                    { name: "Goal", value: "Get a larger hand value than the dealer to win your bet" },
+                    { name: "Hand Value", value: "Sum the numbers on your cards, J Q K count as 10, A counts as 1 or 11" },
+                    { name: "Game Play", value: "You will receive one card, a round of betting will take place, then a second card" +
+                    ", afterwards you can choose to 'hit' to gain another card, or 'stay' to pass the turn to the next player" },
+                    { name: "Dealer", value: "The bot/dealer must hit until they have 17 or more, upon which they must stay" },
+                    { name: "Winnings", value: "You win your bet if you beat the dealer, you lose your bet if the dealer beat you, and you keep your bet if you tied" },
+                    { name: "Blackjacks", value: "When you get 21 on first two cards. You get 1.5 times your bet rounded up and don't hit/stay" },
+                );
 
             sendEmbed(msg, rulesEmbed);
         } else if (arg == "help") {
             let helpEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle("Blackjack Comamnds")
-                .addField("help", "Send this help message")
-                .addField("rules", "Send")
-                .addField("hit", "hit if you are the current player")
-                .addField("stay", "stay if you are the current player")
-                .addField("bet <amount>", "bet <amount> if you are current player, use an integer <amount>")
-                .addField("restart", "restart the current game")
-                .addField("next", "continue current game with a new round")
-                .addField("cards", "shows cards")
-                .addField("points", "shows current points")
-                .addField("turn", "shows current player");
+                .addFields(
+                    { name: "help", value: "Send this help message" },
+                    { name: "rules", value: "Send rules help message" },
+                    { name: "hit", value: "hit if you are the current player" },
+                    { name: "stay", value: "stay if you are the current player" },
+                    { name: "bet <amount>", value: "bet <amount> if you are current player, use an integer <amount>" },
+                    { name: "restart", value: "restart the current game" },
+                    { name: "next", value: "continue current game with a new round" },
+                    { name: "cards", value: "shows cards" },
+                    { name: "points", value: "shows current points" },
+                    { name: "turn", value: "shows current player" }
+                );
                 
             sendEmbed(msg, helpEmbed);
         } else if(arg == "hit") {

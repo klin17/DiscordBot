@@ -23,9 +23,11 @@ module.exports = {
                 let commandsEmbed = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setTitle(PROMPTCHAR + cmdArgs[0])
-                    .addField("Usage", "`" + PROMPTCHAR + command.usage + "`")
-                    .addField("Description", command.description)
-                    .addField("Status", status);
+                    .addFields(
+                        { name: "Usage", value: "`" + PROMPTCHAR + command.usage + "`" },
+                        { name: "Description", value: command.description },
+                        { name: "Status", value: status }
+                    );
                     
                 sendEmbed(msg, commandsEmbed);
                 return
@@ -39,8 +41,10 @@ module.exports = {
                 let keywordsEmbed = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setTitle(keyword.name)
-                    .addField("Description", keyword.description)
-                    .addField("Status", disabled.disabled.includes(keyword.name) ? "Disabled" : "Enabled");
+                    .addFields(
+                        { name: "Description", value: keyword.description },
+                        { name: "Status", value: disabled.disabled.includes(keyword.name) ? "Disabled" : "Enabled" }
+                    );
                     
                 sendEmbed(msg, keywordsEmbed);
                 return

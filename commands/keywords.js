@@ -27,9 +27,11 @@ module.exports = {
             .setTitle('Keywords')
             .setDescription("\n" + helpMess);
         if(cmdArgs[0] == "all") {
-            keywordsEmbed.addField("Enabled", enabledKeywords.join("\n"));
             let disabledFieldContent = disabledKeywords.length > 0 ? disabledKeywords.join("\n") : "No disabled keywords";
-            keywordsEmbed.addField("Disabled", disabledFieldContent);
+            keywordsEmbed.addFields(
+                { name: "Enabled", value: enabledKeywords.join("\n") },
+                { name: "Disabled", value: disabledFieldContent }
+            );
         } else {
             keywordsEmbed.setDescription(helpMess + "\n" + enabledKeywords.join("\n"));
         }
